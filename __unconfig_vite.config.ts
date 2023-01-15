@@ -1,12 +1,16 @@
+
+let __unconfig_data;
+let __unconfig_stub = function (data = {}) { __unconfig_data = data };
+__unconfig_stub.default = (data = {}) => { __unconfig_data = data };
 import presetIcons from '@unocss/preset-icons';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { presetWind } from 'unocss';
-import Unocss from 'unocss/vite';
+const Unocss = __unconfig_stub;;
 import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+const __unconfig_default =  defineConfig({
   base:'/one-codes',
   optimizeDeps:{
     include:['@antd-one/components']
@@ -73,3 +77,5 @@ export default defineConfig({
     },
   },
 });
+
+if (typeof __unconfig_default === "function") __unconfig_default(...[{"command":"serve","mode":"development"}]);export default __unconfig_data;
