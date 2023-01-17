@@ -8,6 +8,11 @@ import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   base:'/one-codes',
+  build: {
+        commonjsOptions: {
+            transformMixedEsModules: true
+        }
+    },
   optimizeDeps:{
     include:['@antd-one/components']
   },
