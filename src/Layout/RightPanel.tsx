@@ -50,8 +50,6 @@ const RightPanel = () => {
             install={install}
             fields={formState.fields}
             onValuesChange={(values) => {
-              console.log(values, 'values');
-
               if (isSelect) {
                 // 设置组件的props属性
                 schemaMap[currentStateSnap.id].props = ref(values);

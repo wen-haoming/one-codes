@@ -1,9 +1,10 @@
 import Header from './Header';
-import LeftPanel from './LeftPanel';
 import RenderPanel from './RenderPanel';
 import RightPanel from './RightPanel';
+import LeftPanel from './LeftPanel';
 
 const Layout = () => {
+ 
   return (
     <div className="flex flex-col relative very-cool w-full	h-full">
       <Header />

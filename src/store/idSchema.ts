@@ -1,10 +1,9 @@
 import { proxy } from 'valtio';
 
-type IdSchema = {
+export type IdSchema = {
   id: string;
   slot?: {
     id: string;
-    slotMap: string;
   }[];
 }[];
 

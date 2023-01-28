@@ -4,13 +4,16 @@ import { resolve } from 'path';
 import { presetWind } from 'unocss';
 import Unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
+import commonjs from '@rollup/plugin-commonjs';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base:'/one-codes',
-  optimizeDeps:{
-    include:['@antd-one/components']
-  },
+  base:'/one-codes/',
+  build: {
+    commonjsOptions: {
+        transformMixedEsModules: true
+    }
+},
   resolve: {
     alias: [
       {
@@ -58,7 +61,16 @@ export default defineConfig({
         },
       },
     }),
+    // nodePolyfills(),
+    // nodeResolve({
+    //   browser:true
+    // }),
+   
     react(),
+    commonjs({
+      include: ['@formily/shared'],
+      transformMixedEsModules:true
+    }),
   ],
   css: {
     preprocessorOptions: {
