@@ -8,12 +8,12 @@ import commonjs from '@rollup/plugin-commonjs';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base:'/one-codes/',
+  base: '/one-codes/',
   build: {
     commonjsOptions: {
-        transformMixedEsModules: true
+      transformMixedEsModules: true
     }
-},
+  },
   resolve: {
     alias: [
       {
@@ -65,11 +65,11 @@ export default defineConfig({
     // nodeResolve({
     //   browser:true
     // }),
-   
+
     react(),
     commonjs({
       include: ['@formily/shared'],
-      transformMixedEsModules:true
+      transformMixedEsModules: true
     }),
   ],
   css: {

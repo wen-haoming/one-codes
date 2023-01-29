@@ -1,10 +1,10 @@
 import { currentState, schemaMap } from '@/store';
 import { FormRender } from '@antd-one/components';
-import { Switch } from '@formily/antd';
+import { Switch, NumberPicker } from '@formily/antd';
 import { useEffect, useState } from 'react';
 import { ref, useSnapshot } from 'valtio';
 
-const install = { Switch };
+const install = { Switch,NumberPicker };
 
 export type Install = typeof install;
 
@@ -21,17 +21,17 @@ const RightPanel = () => {
   // 获取组件的默认配置
   useEffect(() => {
     if (currentStateSnap.id) {
-      const propsConfigArray =
+      const propsConfigArray = ref(
         (schemaMapSnap &&
           currentStateSnap.id &&
-          schemaMapSnap[currentStateSnap.id]?.component?.propsConfigArray) ||
-        [];
+          schemaMapSnap[currentStateSnap.id]?.configProps) ||
+        []);
       const defaultProps =
         schemaMapSnap[currentStateSnap.id]?.component.defaultProps || {};
       const props = schemaMapSnap[currentStateSnap.id]?.props || defaultProps;
 
       setFormState({
-        fields: propsConfigArray,
+        fields: propsConfigArray as any,
         form: FormRender.createForm({
           initialValues: props,
         }),

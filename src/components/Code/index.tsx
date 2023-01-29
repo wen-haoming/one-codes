@@ -1,4 +1,4 @@
-import { idSchema, schemaMap } from '@/store';
+import { IdSchema, idSchema, SchemaMap, schemaMap } from '@/store';
 import { parse } from '@/utils/parse';
 import * as monaco from 'monaco-editor';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
@@ -45,16 +45,8 @@ export const Code = () => {
   }, []);
 
   useEffect(() => {
-    const UiComponents = idSchemaSnap.map(({ id }) => {
-      const component = schemaMapSnap[id].component;
-      const props = schemaMapSnap[id].props || component.defaultProps;
-      return {
-        component,
-        props,
-      };
-    });
-    if (monacoRef.current) {
-      monacoRef.current.setValue(parse(UiComponents));
+    if (monacoRef.current && idSchemaSnap) {
+      monacoRef.current.setValue(parse(idSchemaSnap as IdSchema,schemaMapSnap as SchemaMap));
     }
   }, [idSchemaSnap]);
 

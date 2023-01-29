@@ -1,4 +1,4 @@
-import type { UiItem } from '@/store';
+import type { IdSchema, SchemaMap, UiItem } from '@/store';
 import parserBabel from 'prettier/parser-babel';
 import prettier from 'prettier/standalone';
 import reactElementToJSXString from 'react-element-to-jsx-string';
@@ -39,59 +39,47 @@ export const getImports = (uiTree: UiItem[]) => {
     .join(`\n`);
 };
 
-// const getPropsString = (props: Record<string, any>) => {
-//   return Object.entries(props)
-//     .map(([propsKey, propsValue]) => {
-//       if (typeof propsValue === 'string') {
-//         // 字符串
-//         return `${propsKey}='${propsValue}'`;
-//       } else if (typeof propsValue === 'boolean' || typeof propsValue === 'number') {
-//         // 布尔值
-//         return `${propsKey}={${propsValue}}`;
-//       } else if (Array.isArray(propsValue)) {
-//         // 数组
-//         return `${propsKey}={${stringify(propsValue)}}`;
-//       } else if (!Array.isArray(propsValue) && typeof propsValue === 'object') {
-//         // 对象
-//         return `${propsKey}={${stringify(propsValue)}}`;
-//       }
-//     })
-//     .join(' ');
-// };
+const getJsx = (getIdSchema: IdSchema, getSchemaMap: SchemaMap) => {
 
-const getJsx = (uiTree: any) => {
-  return uiTree
-    .map((uiTreeItem: any) => {
-      const { component, props } = uiTreeItem;
-      const Ele = (component?.importDeclaration.importDefault ||
-        component?.importDeclaration?.import) as any;
+  return getIdSchema.map(schema => {
 
-      return reactElementToJSXString(<Ele {...props} />, {
-        showFunctions: true,
-        functionValue: (fn) => {
-          if (fn.name === 'request') {
-            return () => {
-              return {
-                total: 'totalNumber',
-                list: [],
-              };
-            };
-          } else {
-            return () => {};
-          }
+    const Ele = getSchemaMap[schema.id].component;
+    const props = getSchemaMap[schema.id].props
+
+    if (schema.slot) {
+      return reactElementToJSXString(<Ele {...props} key={schema.id} >
+        {
+          schema.slot.map(item => {
+            const Ele2 = getSchemaMap[item.id].component;
+            const props2 = getSchemaMap[item.id].props;
+            return <Ele2 {...props2} key={String(item.id)} />
+          })
+        }
+      </Ele>, {
+        displayName(element:any) {
+          return getSchemaMap[String(element.key).replace(/[^\w]|$/g,'')].componentName
         },
-      });
+        filterProps:['key']
+      })
+    }
+
+    return reactElementToJSXString(<Ele {...props} key={schema.id}  />, {
+      filterProps:['key'],
+      displayName(element:any) {
+        return getSchemaMap[element.key].componentName
+      },
     })
-    .join('\n');
+  })
 };
 
-export const parse = (uiTree: any) => {
-  const str = `${getImports(uiTree)}
+export const parse = (getIdSchema: IdSchema, getSchemaMap: SchemaMap) => {
+  // ${getImports(uiTree)}
+  const str = `
 
   function Page (){
 
     return <>
-        ${getJsx(uiTree)}
+        ${getJsx(getIdSchema, getSchemaMap).join('\n')}
     </>
   }
 

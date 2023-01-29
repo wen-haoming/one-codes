@@ -1,18 +1,21 @@
+import { FieldType, } from '@antd-one/components';
 import { proxy } from 'valtio';
+import { Install as FormRenderInstall } from '@/Layout/RightPanel'
 
 export type Install = {
   typeName: string,
   icon?: string;
   children: {
-    title?:string;
-    component:any;
-    configProps?:any[];
-    isSlot?:boolean;
-    defaultProps?:any;
+    title?: string;
+    component: any;
+    componentName: string,
+    configProps?: FieldType<FormRenderInstall>[];
+    isSlot?: boolean;
+    defaultProps?: any;
   }[]
 }[]
 
 export const globalProps = proxy<{
   install: Install
-}>({install:[]})
+}>({ install: [] })
 

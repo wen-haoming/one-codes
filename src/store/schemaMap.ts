@@ -1,9 +1,11 @@
-import { WidgeFC } from '@/components/Widge/types';
 import { proxy } from 'valtio';
 
 export type UiItem = {
   props: Record<string, any> | null;
-  component: WidgeFC<any>;
+  componentName: string; // 组件名称
+  component: any; // 组件
+  configProps?: any[]; // 右侧面板配置项
+  path:string;
 };
 
 export type SchemaMap = Record<string, UiItem>;
