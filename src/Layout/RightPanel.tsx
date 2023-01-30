@@ -21,15 +21,15 @@ const RightPanel = () => {
   // 获取组件的默认配置
   useEffect(() => {
     if (currentStateSnap.id) {
-      const propsConfigArray = ref(
+      const propsConfigArray = (
         (schemaMapSnap &&
           currentStateSnap.id &&
-          schemaMapSnap[currentStateSnap.id]?.configProps) ||
+          schemaMap[currentStateSnap.id]?.configProps) ||
         []);
       const defaultProps =
         schemaMapSnap[currentStateSnap.id]?.component.defaultProps || {};
-      const props = schemaMapSnap[currentStateSnap.id]?.props || defaultProps;
-
+      const props = schemaMap[currentStateSnap.id]?.props || defaultProps;
+          
       setFormState({
         fields: propsConfigArray as any,
         form: FormRender.createForm({
@@ -45,7 +45,7 @@ const RightPanel = () => {
         {isSelect && (
           <FormRender
             form={formState.form}
-            layoutProps={{ layout: 'horizontal', size: 'small', labelCol: 9 }}
+            layoutProps={{ layout: 'vertical', size: 'small', labelCol: 9 }}
             gridProps={{ maxColumns: 1 }}
             install={install}
             fields={formState.fields}

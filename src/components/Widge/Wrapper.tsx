@@ -1,6 +1,8 @@
 import { currentState, IdSchema, idSchema, schemaMap } from '@/store';
 import { CloseOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { Button, ConfigProvider, Input, Tooltip } from 'antd';
+import { FC, ReactNode, useEffect, useState, Children, useMemo } from 'react';
+import { findDOMNode } from 'react-dom'
 import { memo } from 'react';
 import { useSnapshot } from 'valtio';
 import AddWidget from '../AddWidget';
@@ -15,14 +17,16 @@ interface ComponentProps {
 const Wrapper: FC<ComponentProps> = (props) => {
   const { id, isSlot } = props;
   const currentStateSnap = useSnapshot(currentState);
+  const schemaMapSnap = useSnapshot(schemaMap);
+  const [wrapperDisplay,setWrapperDisplay] = useState<'inline-block'|'block' | '' >('')
   const [operatorData, setOperatorData] = useState({
     x: 0,
     y: 0,
   })
 
   const deleComponent = () => {
-    const searchId:any = (idSchema2: IdSchema) => {
-      return idSchema2.find((schema,idx) => {
+    const searchId: any = (idSchema2: IdSchema) => {
+      return idSchema2.find((schema, idx) => {
         if (schema.id === id) {
           idSchema2.splice(idx, 1);
           return true
@@ -45,22 +49,26 @@ const Wrapper: FC<ComponentProps> = (props) => {
     });
   };
 
-  useEffect(() => {
+  useEffect(()=>{
+    const wrapperDom = document.getElementById(id);
+    if(props.children && Children.count(props.children) === 1 && wrapperDom && wrapperDom.childNodes[0] ){
+      setWrapperDisplay(window.getComputedStyle(wrapperDom.childNodes[0]  as any).display as any || '');
+    } 
     if (id === currentStateSnap.id) {
-      const currentSelectDom = document.getElementById(id);
-      const right = currentSelectDom?.getBoundingClientRect().right;
-      const bottom = currentSelectDom?.getBoundingClientRect().bottom;
-      if(right !== undefined && bottom !== undefined){
+      // const currentSelectDom = document.getElementById(id);
+      const right = wrapperDom?.getBoundingClientRect().right;
+      const bottom = wrapperDom?.getBoundingClientRect().bottom;
+      if (right !== undefined && bottom !== undefined) {
         setOperatorData({
-          x: right,
+          x: document.documentElement.clientWidth - right,
           y: bottom
         })
       }
     }
-  }, [id, currentStateSnap.id])
+  },[id, currentStateSnap.id])
 
   return <>
-    <div id={id} className={`hover:editor-hover z-10 m-b1 m-r1 ${id === currentStateSnap.id && 'editor-hover'}`} onClick={(e) => {
+    <div id={id} className={`hover:editor-hover z-10 m-b1 m-r1 ${id === currentStateSnap.id && 'editor-hover'} ${wrapperDisplay}`} onClick={(e) => {
       e.stopPropagation();
       e.cancelable = true;
       currentState.id = id;
@@ -69,20 +77,42 @@ const Wrapper: FC<ComponentProps> = (props) => {
         props.children
       }
     </div>
-    {id === currentStateSnap.id && <div className={`fixed text-white z-999999`} style={{ left: operatorData.x, top: operatorData.y }}>
-      <div>
-        <DeleteOutlined
-          onClick={deleComponent}
-          className="bg-brand-primary text-white  text-10px cursor-pointer p-8px "
-        />
-       {<AddWidget slotId={id} >
-          <PlusOutlined className="bg-brand-primary  text-white	text-10px cursor-pointer p-8px" />
-        </AddWidget>}
-        <CloseOutlined
-          onClick={cancel}
-          className="bg-brand-primary  text-white	text-10px cursor-pointer p-8px"
-        />
-      </div>
+    {id === currentStateSnap.id && <div className={`fixed z-999999999999 bg-brand-primary flex text-white items-center	p-2px rounded-3px`} style={{ right: operatorData.x, top: operatorData.y + 5 }}>
+      <ConfigProvider prefixCls='one-codes' componentSize="small">
+        <span className="px-5px text-12px">
+          {schemaMapSnap[id].componentName}
+        </span>
+        <Input.Group compact style={{ borderRadius: 5 }}>
+          <AddWidget slotId={id} >
+            <Tooltip title="添加组件" overlayInnerStyle={{ fontSize: 12, borderRadius: 5 }} showArrow={false}>
+              <Button
+                className='bg-brand-primary  text-white	text-10px cursor-pointer p-8px'
+                type="primary"
+                icon={<PlusOutlined
+                  style={{ fontSize: 12 }}
+                />} />
+            </Tooltip>
+          </AddWidget>
+          <Tooltip title="删除组件" overlayInnerStyle={{ fontSize: 12, borderRadius: 5 }} showArrow={false}>
+            <Button
+              className='bg-brand-primary  text-white	text-10px cursor-pointer p-8px'
+              type="primary"
+              onClick={deleComponent}
+              icon={<DeleteOutlined
+                style={{ fontSize: 12 }}
+              />} />
+          </Tooltip>
+          <Tooltip title="取消" overlayInnerStyle={{ fontSize: 12, borderRadius: 5 }} showArrow={false}>
+            <Button
+              className='bg-brand-primary  text-white	text-10px cursor-pointer p-8px'
+              type="primary"
+              onClick={cancel}
+              icon={<CloseOutlined
+                style={{ fontSize: 12 }}
+              />} />
+          </Tooltip>
+        </Input.Group>
+      </ConfigProvider>
     </div>}
   </>
 };

@@ -1,13 +1,14 @@
-import 'uno.css';
 import App from './App';
 import { createRoot } from 'react-dom/client';
 import { ProFormText, ProForm, QueryFilter, ProFormDatePicker, ProFormCheckbox, ProFormRadio, ProFormTextArea } from '@ant-design/pro-components'
 import { TableFormRender, TableFormRenderProps } from '@antd-one/components';
 import Columns from './Columns'
-
+import 'uno.css';
+import 'antd/dist/antd.css'
+import '@formily/antd/dist/antd.css'
 const container = document.getElementById('root');
 const random = () => Math.floor(Math.random() * 100000).toString(16);
-import { Card } from 'antd'
+import { Button, Card, Input, Modal } from 'antd'
 
 if (container) {
   const root = createRoot(container);
@@ -45,6 +46,7 @@ if (container) {
                 });
               },
               columns: [
+
                 {
                   title: 'a',
                   dataIndex: 'a',
@@ -155,6 +157,155 @@ if (container) {
             }]
           },
          ]
+      },
+      {
+        typeName: 'Antd 组件',
+        icon: '',
+        children: [
+          {
+            component: Input,
+            componentName: 'Input',
+            isSlot: false,
+            defaultProps: {
+              bordered: true,
+            },
+            configProps: [
+              {
+                type: 'Switch',
+                name: 'showCount',
+                title: '是否显示数字'
+              },
+              {
+                type: 'Switch',
+                name: 'bordered',
+                title: '是否有边框'
+              },
+              {
+                type: 'Switch',
+                name: 'allowClear',
+                title: '可以点击清除图标删除内容'
+              },
+            ]
+          },
+          {
+            component: Button,
+            componentName: 'Button',
+            isSlot: false,
+            defaultProps: {
+              block: false,
+              type:'default',
+              shape:'default',
+              children:'Button'
+            },
+            configProps: [
+              {
+                type: 'Input',
+                name: 'children',
+                title: '内容'
+              },
+              {
+                type: 'Switch',
+                name: 'block',
+                title: '将按钮宽度调整为其父宽度的选项'
+              },
+              {
+                type: 'Switch',
+                name: 'danger',
+                title: '设置危险按钮'
+              },
+              {
+                type: 'Select',
+                name: 'shape',
+                title: '设置按钮形状',
+                enum: [
+                  {
+                    label: 'default',
+                    value: 'default'
+                  },
+                  {
+                    label: 'circle',
+                    value: 'circle'
+                  },
+                  {
+                    label: 'round',
+                    value: 'round'
+                  },
+                ]
+              },
+              {
+                type: 'Select',
+                name: 'type',
+                title: '设置按钮类型',
+                enum: [
+                  {
+                    label: 'default',
+                    value: 'default'
+                  },
+                  {
+                    label: 'primary',
+                    value: 'primary'
+                  },
+                  {
+                    label: 'ghost',
+                    value: 'ghost'
+                  },
+                  {
+                    label: 'dashed',
+                    value: 'dashed'
+                  },
+                  {
+                    label: 'link',
+                    value: 'link'
+                  },
+                  {
+                    label: 'text',
+                    value: 'text'
+                  },
+                ]
+              },
+            ]
+          },
+          {
+            component: (props:any) => {
+              return <>
+                <Button>
+                  Modal
+                </Button>
+                <Modal {...props} />
+              </>
+            },
+            componentName: 'Modal',
+            isSlot: false,
+            defaultProps: {
+              maskClosable: true,
+              title: 'title',
+              width: 520,
+              open: false
+            },
+            configProps: [
+              {
+                type: 'Switch',
+                name: 'maskClosable',
+                title: '点击蒙层是否允许关闭'
+              },
+              {
+                type: 'Input',
+                name: 'title',
+                title: '标题'
+              },
+              {
+                type: 'NumberPicker',
+                name: 'width',
+                title: '宽度'
+              },
+              {
+                type: 'Switch',
+                name: 'open',
+                title: '对话框是否可见'
+              }
+            ]
+          },
+        ]
       },
       {
         typeName: '表单组件',

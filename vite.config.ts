@@ -1,10 +1,10 @@
-import presetIcons from '@unocss/preset-icons';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-import { presetWind } from 'unocss';
+import { presetAttributify, presetUno, presetWind } from 'unocss';
 import Unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 import commonjs from '@rollup/plugin-commonjs';
+import { presetExtra } from 'unocss-preset-extra';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -27,9 +27,11 @@ export default defineConfig({
     ],
   },
   plugins: [
-    // createStyleImportPlugin({ resolves: [AntdResolve()] }),
     Unocss({
-      presets: [presetIcons(), presetWind()],
+      // presets: [
+      // presetUno(),
+      // presetAttributify(),
+      // presetExtra(),],
       shortcuts: {
         btn: 'inline-flex py-.5 px-2 font-semibold rounded bg-brand-primary text-white cursor-pointer hover:bg-brand-hover justify-center items-center',
         widgetBtn:
@@ -61,11 +63,6 @@ export default defineConfig({
         },
       },
     }),
-    // nodePolyfills(),
-    // nodeResolve({
-    //   browser:true
-    // }),
-
     react(),
     commonjs({
       include: ['@formily/shared'],
@@ -76,8 +73,10 @@ export default defineConfig({
     preprocessorOptions: {
       less: {
         modifyVars: {
-          // 'link-color': '#1DA57A',
-          // 'border-radius-base': '2px',
+          '@ant-prefix': 'one-codes',
+          'border-radius-base': '2px',
+          'primary-color': '#2558fb',
+          '@border-radius-base':'5px'
         },
         // 支持内联 javascript
         javascriptEnabled: true,

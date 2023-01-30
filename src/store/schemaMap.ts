@@ -1,4 +1,4 @@
-import { proxy } from 'valtio';
+import { proxy, ref } from 'valtio';
 
 export type UiItem = {
   props: Record<string, any> | null;
@@ -10,4 +10,5 @@ export type UiItem = {
 
 export type SchemaMap = Record<string, UiItem>;
 
-export const schemaMap = proxy<SchemaMap>({});
+export const schemaMap = proxy<SchemaMap>({
+});
