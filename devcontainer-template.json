@@ -1,9 +1,0 @@
-{
-  "id": "azzazkhan",
-  "version": "1.0.1",
-  "name": "Azzaz's Custom Template",
-  "description": "Customized development services template.",
-  "publisher": "Azzaz Khan",
-  "licenseURL": "https://github.com/devcontainers/templates/blob/main/LICENSE",
-  "platforms": ["Any"]
-}
