@@ -83,16 +83,7 @@ const Wrapper: FC<ComponentProps> = (props) => {
           {schemaMapSnap[id].componentName}
         </span>
         <Input.Group compact style={{ borderRadius: 5 }}>
-          <AddWidget slotId={id} >
-            <Tooltip title="添加组件" overlayInnerStyle={{ fontSize: 12, borderRadius: 5 }} showArrow={false}>
-              <Button
-                className='bg-brand-primary  text-white	text-10px cursor-pointer p-8px'
-                type="primary"
-                icon={<PlusOutlined
-                  style={{ fontSize: 12 }}
-                />} />
-            </Tooltip>
-          </AddWidget>
+          <AddWidget slotId={id} />
           <Tooltip title="删除组件" overlayInnerStyle={{ fontSize: 12, borderRadius: 5 }} showArrow={false}>
             <Button
               className='bg-brand-primary  text-white	text-10px cursor-pointer p-8px'

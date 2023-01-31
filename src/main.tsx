@@ -149,12 +149,19 @@ if (container) {
               size: 'small',
               title: 'title',
             },
-            configProps:[{
+            configProps:[
+              {
+                type:'Input',
+                name:'title',
+                title:'title'
+              },
+              {
               type:'Select',
               enum:[{value:'small',label:'small',},{value:'default',label:'default'}],
               name:'size',
               title:'size'
-            }]
+            }
+          ]
           },
          ]
       },

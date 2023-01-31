@@ -1,9 +1,10 @@
 import { idSchema, globalProps, schemaMap, IdSchema } from '@/store';
 import { getId } from '@/utils';
-import { CodepenOutlined } from '@ant-design/icons';
-import { Popover } from 'antd';
+import { CodepenOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Popover } from 'antd';
 import { ReactElement, useState } from 'react';
 import get from 'lodash.get'
+import { ref } from 'valtio';
 
 const AddWidget = (props: {
   slotId?: string; // 嵌套在哪个组件的id
@@ -21,11 +22,11 @@ const AddWidget = (props: {
       showArrow={false}
       arrowPointAtCenter={true}
       placement="bottomLeft"
-      trigger={['click']}
+      trigger={['click','hover']}
       open={open}
       onOpenChange={setOpen}
       content={
-        <div className="w-350px min-h-200px">
+        <div className="w-350px min-h-200px z-9999999999999">
           {
             globalProps.install.map((item, idx) => {
               return <div key={idx}>
@@ -51,7 +52,12 @@ const AddWidget = (props: {
                                 })]
                               }
                             }
-                            path = `${schemaMap[slotId].path}[${target.slot.length - 1}]`
+                            if (schemaMap[slotId].path) {
+                              path = `${schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
+                              console.log(JSON.stringify(idSchema), path);
+                            } else {
+                              path = `[${target.slot.length - 1}]`
+                            }
                           } else {
                             idSchema.push({
                               id,
@@ -61,7 +67,7 @@ const AddWidget = (props: {
                           schemaMap[id] = {
                             props: ele.defaultProps || null,
                             component: ele.component,
-                            componentName: ele.componentName ,
+                            componentName: ele.componentName,
                             configProps: ele.configProps,
                             path: path
                           };
@@ -85,7 +91,12 @@ const AddWidget = (props: {
         </div>
       }
     >
-      {props.children ? props.children : <div className="btn w-6 h-6 ">+</div>}
+      <Button
+        className='bg-brand-primary  text-white	text-10px cursor-pointer p-8px'
+        type="primary"
+        icon={<PlusOutlined
+          style={{ fontSize: 12 }}
+        />} />
     </Popover>
   );
 };

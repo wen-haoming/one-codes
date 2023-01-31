@@ -1,6 +1,7 @@
 import type { IdSchema, SchemaMap, UiItem } from '@/store';
 import parserBabel from 'prettier/parser-babel';
 import prettier from 'prettier/standalone';
+import React from 'react';
 import reactElementToJSXString from 'react-element-to-jsx-string';
 
 // 分析依赖
@@ -41,46 +42,37 @@ export const getImports = (uiTree: UiItem[]) => {
 
 const getJsx = (getIdSchema: IdSchema, getSchemaMap: SchemaMap) => {
 
-  return getIdSchema.map(schema => {
+  const jsxEle = ({ idSchema }: { idSchema: IdSchema }) => {
+    return idSchema.map(schema => {
+      const Ele = getSchemaMap[schema.id].component;
+      const props = getSchemaMap[schema.id].props;
+      if (schema.slot) {
+        return <Ele {...props} key={schema.id} >
+          {jsxEle({ idSchema: schema.slot })}
+        </Ele>
+      }
 
-    const Ele = getSchemaMap[schema.id].component;
-    const props = getSchemaMap[schema.id].props
-
-    if (schema.slot) {
-      return reactElementToJSXString(<Ele {...props} key={schema.id} >
-        {
-          schema.slot.map(item => {
-            const Ele2 = getSchemaMap[item.id].component;
-            const props2 = getSchemaMap[item.id].props;
-            return <Ele2 {...props2} key={String(item.id)} />
-          })
-        }
-      </Ele>, {
-        displayName(element:any) {
-          return getSchemaMap[String(element.key).replace(/[^\w]|$/g,'')].componentName
-        },
-        filterProps:['key']
-      })
-    }
-
-    return reactElementToJSXString(<Ele {...props} key={schema.id}  />, {
-      filterProps:['key'],
-      displayName(element:any) {
-        return getSchemaMap[element.key].componentName
-      },
+      return <Ele {...props} key={schema.id} />
     })
+  }
+  
+  return reactElementToJSXString(<React.Fragment key={""}>{jsxEle({ idSchema: getIdSchema })}</React.Fragment>, {
+    filterProps: ['key'],
+    displayName(element: any) {
+      return getSchemaMap[String(element.key).replace(/[^\w]|$/g, '')]?.componentName || ''
+    },
   })
 };
 
 export const parse = (getIdSchema: IdSchema, getSchemaMap: SchemaMap) => {
   // ${getImports(uiTree)}
+  const jsxString = getJsx(getIdSchema, getSchemaMap);
+
   const str = `
 
   function Page (){
 
-    return <>
-        ${getJsx(getIdSchema, getSchemaMap).join('\n')}
-    </>
+    return ${jsxString}
   }
 
   export default Page
