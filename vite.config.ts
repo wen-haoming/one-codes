@@ -10,6 +10,15 @@ import { presetExtra } from 'unocss-preset-extra';
 export default defineConfig({
   base: '/one-codes/',
   build: {
+    rollupOptions:{
+      output:{
+        manualChunks:(id) => {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
+      }
+    },
     commonjsOptions: {
       transformMixedEsModules: true
     }
