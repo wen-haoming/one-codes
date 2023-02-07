@@ -1,4 +1,4 @@
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path';
 import Unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
@@ -8,6 +8,7 @@ import commonjs from '@rollup/plugin-commonjs';
 export default defineConfig({
   base: '/one-codes/',
   build: {
+    // sourcemap:true,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
