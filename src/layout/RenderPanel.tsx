@@ -34,11 +34,11 @@ const RenderPanel = () => {
         </Tooltip>
       </Space>
       <div className="h-[calc(100vh-5rem)] bg-white overflow-y-auto m-2 p-1 flex-col">
-        {/* {currentStateSnap.panelMode === 'edit' && <iframe className='h-100% h-100%' width={'100%'} src={import.meta.env.DEV ? '/one-codes/src/render/index.html' : undefined} srcDoc={import.meta.env.PROD ? 
+        {currentStateSnap.panelMode === 'edit' && <iframe className='h-100% h-100%' width={'100%'} src={import.meta.env.DEV ? '/one-codes/src/render/index.html' : undefined} srcDoc={import.meta.env.PROD ? 
           `<style>${antcss}</style>
           <div id="root"></div>
           <script type="module">${srcDoc}</script>`
-           : undefined} />} */}
+           : undefined} />}
         {/* {currentStateSnap.panelMode === 'edit' && <Render />} */}
         {currentStateSnap.panelMode === 'code' && <Code />}
       </div>
