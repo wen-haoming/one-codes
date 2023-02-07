@@ -18,9 +18,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           # cache: 'pnpm'
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
       - name: Run unit build
-        run: npm run build
+        run: pnpm run build
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
