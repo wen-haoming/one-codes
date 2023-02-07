@@ -6,6 +6,7 @@ import { Button, Space, Tooltip } from 'antd';
 import { useSnapshot } from 'valtio';
 import Render from '@/components/Render';
 import srcDoc from '../dist/index.js?raw' // prod
+import antcss from 'antd/dist/antd.css?raw' // prod
 
 const RenderPanel = () => {
   const currentStateSnap = useSnapshot(currentState);
@@ -33,8 +34,9 @@ const RenderPanel = () => {
         </Tooltip>
       </Space>
       <div className="h-[calc(100vh-5rem)] bg-white overflow-y-auto m-2 p-1 flex-col">
-        {currentStateSnap.panelMode === 'edit' && <iframe className='h-100% h-100%'   width={'100%'} src={import.meta.env.DEV ? '/one-codes/src/render/index.html' : undefined} srcDoc={import.meta.env.PROD ? 
-          `<div id="root"></div>
+        {currentStateSnap.panelMode === 'edit' && <iframe className='h-100% h-100%' width={'100%'} src={import.meta.env.DEV ? '/one-codes/src/render/index.html' : undefined} srcDoc={!import.meta.env.PROD ? 
+          `<style>${antcss}</style>
+          <div id="root"></div>
           <script type="module">${srcDoc}</script>`
            : undefined} />}
         {/* {currentStateSnap.panelMode === 'edit' && <Render />} */}
