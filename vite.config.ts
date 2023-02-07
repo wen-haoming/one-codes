@@ -1,18 +1,16 @@
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-import { presetAttributify, presetUno, presetWind } from 'unocss';
 import Unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 import commonjs from '@rollup/plugin-commonjs';
-import { presetExtra } from 'unocss-preset-extra';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/one-codes/',
   build: {
-    rollupOptions:{
-      output:{
-        manualChunks:(id) => {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
           if (id.includes('node_modules')) {
             return 'vendor';
           }
@@ -85,7 +83,7 @@ export default defineConfig({
           '@ant-prefix': 'one-codes',
           'border-radius-base': '2px',
           'primary-color': '#2558fb',
-          '@border-radius-base':'5px'
+          '@border-radius-base': '5px'
         },
         // 支持内联 javascript
         javascriptEnabled: true,

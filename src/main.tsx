@@ -1,7 +1,7 @@
 import App from './App';
 import { createRoot } from 'react-dom/client';
 import { ProFormText, ProForm, QueryFilter, ProFormDatePicker, ProFormCheckbox, ProFormRadio, ProFormTextArea } from '@ant-design/pro-components'
-import { TableFormRender, TableFormRenderProps } from '@antd-one/components';
+import { TableFormRender } from '@antd-one/components';
 import Columns from './Columns'
 import 'uno.css';
 import 'antd/dist/antd.css'
@@ -19,9 +19,9 @@ if (container) {
         icon: '',
         children: [
           {
-            component:TableFormRender,
-            componentName:'TableFormRender',
-            defaultProps:{
+            component: TableFormRender,
+            componentName: 'TableFormRender',
+            defaultProps: {
               tableProps: {
                 size: 'small',
                 rowKey: 'id',
@@ -149,21 +149,21 @@ if (container) {
               size: 'small',
               title: 'title',
             },
-            configProps:[
+            configProps: [
               {
-                type:'Input',
-                name:'title',
-                title:'title'
+                type: 'Input',
+                name: 'title',
+                title: 'title'
               },
               {
-              type:'Select',
-              enum:[{value:'small',label:'small',},{value:'default',label:'default'}],
-              name:'size',
-              title:'size'
-            }
-          ]
+                type: 'Select',
+                enum: [{ value: 'small', label: 'small', }, { value: 'default', label: 'default' }],
+                name: 'size',
+                title: 'size'
+              }
+            ]
           },
-         ]
+        ]
       },
       {
         typeName: 'Antd 组件',
@@ -200,9 +200,9 @@ if (container) {
             isSlot: false,
             defaultProps: {
               block: false,
-              type:'default',
-              shape:'default',
-              children:'Button'
+              type: 'default',
+              shape: 'default',
+              children: 'Button'
             },
             configProps: [
               {
@@ -273,7 +273,7 @@ if (container) {
             ]
           },
           {
-            component: (props:any) => {
+            component: (props: any) => {
               return <>
                 <Button>
                   Modal

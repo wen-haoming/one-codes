@@ -1,6 +1,6 @@
 import AddWidget from '@/components/AddWidget';
 import Wrapper from '@/components/Widge/Wrapper';
-import { IdSchema, idSchema, SchemaMap, schemaMap } from '@/store';
+import { IdSchema, idSchema, schemaMap } from '@/store';
 import { ConfigProvider } from 'antd';
 import type { FC } from 'react';
 import { ref, useSnapshot } from 'valtio';
@@ -12,7 +12,6 @@ const NestedRender = (
 ) => {
   const idSchemaSnap = props.idSchema;
   useSnapshot(schemaMap);
-
   return (
     <>
       {idSchemaSnap.map(({ id, slot }) => {

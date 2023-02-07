@@ -1,6 +1,6 @@
 import { FieldType, } from '@antd-one/components';
 import { proxy } from 'valtio';
-import { Install as FormRenderInstall } from '@/Layout/RightPanel'
+import { Install as FormRenderInstall } from '@/layout/RightPanel'
 
 export type Install = {
   typeName: string,
