@@ -8,6 +8,7 @@ import commonjs from '@rollup/plugin-commonjs';
 export default defineConfig({
   base: '/one-codes/',
   build: {
+    sourcemap:true,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
