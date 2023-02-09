@@ -1,9 +1,13 @@
 import { ConfigProvider } from 'antd';
-import 'antd/dist/antd.compact.less'; // 引入官方提供的紧凑 less 样式入口文件
 import zhCN from 'antd/es/locale/zh_CN';
 import { useEffect } from 'react';
 import Layout from './layout';
 import { Install, globalProps } from '@/store'
+
+const defaultData = {
+  borderRadius: 4,
+  colorPrimary: '#2558fb',
+};
 
 function OneCodes(props: {
   install: Install
@@ -14,7 +18,16 @@ function OneCodes(props: {
   }, [])
 
   return (
-    <ConfigProvider locale={zhCN} prefixCls="one-codes">
+    <ConfigProvider theme={{
+      token: { colorPrimary: defaultData.colorPrimary, borderRadius: defaultData.borderRadius },
+      components:{
+        Segmented:{
+          colorText:defaultData.colorPrimary,
+          borderRadius:0,
+          borderRadiusOuter:0
+        }
+      }
+    }}>
       <Layout />
     </ConfigProvider>
   );

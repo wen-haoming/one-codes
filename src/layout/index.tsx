@@ -4,12 +4,11 @@ import RightPanel from './RightPanel';
 import LeftPanel from './LeftPanel';
 
 const Layout = () => {
- 
   return (
-    <div className="flex flex-col relative very-cool w-full	h-full">
+    <div className="flex flex-col relative w-full	h-full">
       <Header />
       <div className="flex flex-1">
-        {/* <LeftPanel /> */}
+        <LeftPanel />
         <RenderPanel />
         <RightPanel />
       </div>

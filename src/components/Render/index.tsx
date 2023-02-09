@@ -1,52 +1,22 @@
-import AddWidget from '@/components/AddWidget';
-import Wrapper from '@/components/Widge/Wrapper';
-import { IdSchema, idSchema, schemaMap } from '@/store';
-import { ConfigProvider } from 'antd';
-import type { FC } from 'react';
-import { ref, useSnapshot } from 'valtio';
+import { useRef } from "react"
+import srcDocText from './srcdoc.html?raw';
 
-const NestedRender = (
-  props: {
-    idSchema: IdSchema,
-  }
-) => {
-  const idSchemaSnap = props.idSchema;
-  useSnapshot(schemaMap);
-  return (
-    <>
-      {idSchemaSnap.map(({ id, slot }) => {
-        const UiComponent = (schemaMap)[id].component;
-        const props = (schemaMap)[id].props;
-        if (slot) {
-          return <Wrapper key={id} id={id}>
-            <UiComponent {...props} >
-              <NestedRender idSchema={slot} />
-            </UiComponent>
-          </Wrapper>
-        }
+const sandboxAttr = [
+  'allow-forms',
+  'allow-modals',
+  'allow-pointer-lock',
+  'allow-popups',
+  'allow-same-origin',
+  'allow-scripts',
+  'allow-top-navigation-by-user-activation'
+].join(' ')
 
-        return (
-          <Wrapper key={id} id={id}>
-            <UiComponent {...props} />
-          </Wrapper>
-        );
-      })}
-    </>
-  );
+function Render() {
+
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  
+  return <iframe srcDoc={srcDocText} sandbox={sandboxAttr} ref={iframeRef} className="border-none w-100% h-100%"></iframe>
 }
 
-export const Render: FC = () => {
-  const idSchemaSnap = useSnapshot(idSchema);
-  const schemaMapSnap = useSnapshot(schemaMap);
-
-  return <><ConfigProvider prefixCls='ant'>
-    <NestedRender idSchema={idSchemaSnap as IdSchema} />
-  </ConfigProvider>
-    <div className='w-100%'>
-      <AddWidget />
-    </div>
-  </>
-
-};
-
-export default Render;
+export default Render

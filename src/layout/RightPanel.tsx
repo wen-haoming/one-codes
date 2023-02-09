@@ -1,48 +1,48 @@
 import { currentState, schemaMap } from '@/store';
-import { FormRender } from '@antd-one/components';
-import { Switch, NumberPicker } from '@formily/antd';
-import { useEffect, useState } from 'react';
+// import { FormRender } from '@antd-one/components';
+// import { Switch, NumberPicker } from '@formily/antd';
+// import { useEffect, useState } from 'react';
 import { ref, useSnapshot } from 'valtio';
 
-const install = { Switch,NumberPicker };
+// const install = { Switch,NumberPicker };
 
-export type Install = typeof install;
+export type Install =  any;
 
 const RightPanel = () => {
   const currentStateSnap = useSnapshot(currentState);
   const schemaMapSnap = useSnapshot(schemaMap);
 
-  const [formState, setFormState] = useState<{
-    form: ReturnType<typeof FormRender.createForm>;
-    fields: any[];
-  }>(() => ({ form: FormRender.createForm({}), fields: [] }));
+  // const [formState, setFormState] = useState<{
+  //   form: ReturnType<typeof FormRender.createForm>;
+  //   fields: any[];
+  // }>(() => ({ form: FormRender.createForm({}), fields: [] }));
   // 是否已经选中
   const isSelect = !!currentStateSnap.id;
   // 获取组件的默认配置
-  useEffect(() => {
-    if (currentStateSnap.id) {
-      const propsConfigArray = (
-        (schemaMapSnap &&
-          currentStateSnap.id &&
-          schemaMap[currentStateSnap.id]?.configProps) ||
-        []);
-      const defaultProps =
-        schemaMapSnap[currentStateSnap.id]?.component.defaultProps || {};
-      const props = schemaMap[currentStateSnap.id]?.props || defaultProps;
+  // useEffect(() => {
+  //   if (currentStateSnap.id) {
+  //     const propsConfigArray = (
+  //       (schemaMapSnap &&
+  //         currentStateSnap.id &&
+  //         schemaMap[currentStateSnap.id]?.configProps) ||
+  //       []);
+  //     const defaultProps =
+  //       schemaMapSnap[currentStateSnap.id]?.component.defaultProps || {};
+  //     const props = schemaMap[currentStateSnap.id]?.props || defaultProps;
           
-      setFormState({
-        fields: propsConfigArray as any,
-        form: FormRender.createForm({
-          initialValues: props,
-        }),
-      });
-    }
-  }, [currentStateSnap.id, schemaMapSnap]);
+  //     setFormState({
+  //       fields: propsConfigArray as any,
+  //       form: FormRender.createForm({
+  //         initialValues: props,
+  //       }),
+  //     });
+  //   }
+  // }, [currentStateSnap.id, schemaMapSnap]);
 
   return (
     <div className="w-1/5  border-brand-line ">
       <div className="p-5">
-        {isSelect && (
+        {/* {isSelect && (
           <FormRender
             form={formState.form}
             layoutProps={{ layout: 'vertical', labelCol: 9 }}
@@ -56,7 +56,7 @@ const RightPanel = () => {
               }
             }}
           />
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
-import { FieldType, } from '@antd-one/components';
+// import { FieldType, } from '@antd-one/components';
+// import { Install as FormRenderInstall } from '@/layout/RightPanel'
 import { proxy } from 'valtio';
-import { Install as FormRenderInstall } from '@/layout/RightPanel'
 
 export type Install = {
   typeName: string,
@@ -9,7 +9,7 @@ export type Install = {
     title?: string;
     component: any;
     componentName: string,
-    configProps?: FieldType<FormRenderInstall>[];
+    configProps?: any[];
     isSlot?: boolean;
     defaultProps?: any;
   }[]

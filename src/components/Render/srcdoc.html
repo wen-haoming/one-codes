@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Antd</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { ConfigProvider, DatePicker } = antd;
+    const { ProForm, ProFormText } = ProComponents;
+
+    class App extends React.Component {
+      state = {
+        date: null,
+      };
+      handleChange = date => {
+        antd.message.info(`您选择的日期是: ${date ? date.format('YYYY-MM-DD') : '未选择'}`);
+        this.setState({ date });
+      };
+      render() {
+        const { date } = this.state;
+        return (
+          <ConfigProvider>
+            <div style={{ width: 400, margin: '100px auto' }}>
+              <DatePicker onChange={this.handleChange} />
+              <div style={{ marginTop: 20 }}>
+                当前日期：{date ? date.format('YYYY-MM-DD') : '未选择'}
+              </div>
+            </div>
+            <ProForm
+              onFinish={async (values) => {
+                console.log(values);
+              }}
+            >
+              <ProFormText name="name" label="姓名" />
+            </ProForm>
+          </ConfigProvider>
+        );
+      }
+    }
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.19.3/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"
+    integrity="sha512-hcV6DX35BKgiTiWYrJgPbu3FxS6CsCjKgmrsPRpUPkXWbvPiKxvSVSdhWX0yXcPctOI2FJ4WP6N1zH+17B/sAA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/5.2.0/antd.min.js"></script>
+  <script src="https://unpkg.com/@ant-design/pro-components@2.3.52/dist/components.min.js"></script>
+</body>
+</html>

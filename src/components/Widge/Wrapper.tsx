@@ -6,7 +6,6 @@ import { findDOMNode } from 'react-dom'
 import { memo } from 'react';
 import { useSnapshot } from 'valtio';
 import AddWidget from '../AddWidget';
-import './index.less';
 
 interface ComponentProps {
   id: string;
