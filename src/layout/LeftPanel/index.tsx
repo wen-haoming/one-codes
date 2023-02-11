@@ -1,10 +1,11 @@
-import { AppstoreOutlined, BarsOutlined, SearchOutlined } from '@ant-design/icons';
-import { AutoComplete, Button, Input, Segmented, Space } from 'antd';
-import { useState } from 'react';
+import { AppstoreOutlined, BarsOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { AutoComplete, Button, Input, Modal, Segmented, Space, Spin } from 'antd';
+import { useEffect, useState, startTransition, useDeferredValue } from 'react';
 import { useRequest } from 'ahooks'
+import { depsMap } from '@/store/depsMap';
+import ConfigModal from './ConfigModal';
 
-
-type DependencyItem = {
+export type DependencyItem = {
   label: string;
   value: string;
   latest: string;
@@ -22,7 +23,6 @@ const LeftPanel = () => {
       { referrerPolicy: 'no-referrer' }
     ).then(res => res.json()).then(res => {
       return res.results.map((item: any) => {
-        console.log(item,'item')
         return {
           label: item.name,
           value: item.name,
@@ -32,6 +32,12 @@ const LeftPanel = () => {
       })
     }) as Promise<DependencyItem[]>
   }, { manual: true, debounceWait: 300 })
+
+  const searchDepDeferredVal = useDeferredValue(searchDep.data || [])
+
+  useEffect(() => {
+    depsMap.dependency = depList;
+  }, [depList])
 
   return <div className="w-200px border-brand-line flex flex-col">
     <Segmented
@@ -60,26 +66,32 @@ const LeftPanel = () => {
           <AutoComplete
             className='w-100%'
             showSearch
-            options={(searchDep.data )|| []}
+            options={searchDepDeferredVal}
             onSearch={searchDep.run}
             onSelect={(val, item) => {
-              setDeplist([...depList, {
-                label: item.label,
-                value: item.label,
-                latest: item.latest,
-                version: item.version
-              }])
+              if (depList.findIndex((dep) => dep.label === item.label) === -1) {
+                startTransition(() => {
+                  setDeplist([...depList, {
+                    label: item.label,
+                    value: item.label,
+                    latest: item.latest,
+                    version: item.version,
+                  }])
+                })
+              }
             }}
           >
-            <Input prefix={<SearchOutlined/>} bordered={false} placeholder="search dependency" className='bg-brand-grey hover:bg-brand-grey focus:bg-brand-grey' />
+            <Input prefix={searchDep.loading ? <Spin size="small" indicator={<LoadingOutlined spin />} /> : <SearchOutlined className='text-brand-primary' />} bordered={false} placeholder="search dependency" className='bg-brand-grey hover:bg-brand-grey focus:bg-brand-grey' />
           </AutoComplete>
           <div className='p-t-8px w-100%'>
             {
-              depList.map((depButton)=>{
-                return <Button type="text" className='m-b-8px flex justify-between' block>
-                  <span>{depButton.label}</span>
-                  <span className='text-gray'>{depButton.version}</span>
-                </Button>
+              depList.map((depButton) => {
+                return <ConfigModal {...depButton} key={depButton.label}>
+                  <Button type="text" className='m-b-8px flex justify-between' block key={depButton.label}>
+                    <span>{depButton.label}</span>
+                    <span className='text-gray'>{depButton.version}</span>
+                  </Button>
+                </ConfigModal>
               })
             }
           </div>
