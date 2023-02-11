@@ -31,7 +31,7 @@ const AddWidget = (props: {
         <div className="w-350px min-h-200px z-9999999999999 p-15px" >
           {
             Object.entries(depsMapSnap.depsConfig).map(([moduleName,depsList])=>{
-             return  <div  key={moduleName}>
+             return  depsList.moduleConfig.length && <div  key={moduleName}>
               <span className="m-0 text-gray text-1 text-16px">{moduleName}</span>
               <div className="flex flex-row flex-wrap">
                 {
