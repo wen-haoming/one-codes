@@ -1,7 +1,7 @@
 import { Button ,Modal} from "antd"
 import {useBoolean} from 'ahooks';
 
-function Icons({value,onChangex}){
+function Icons(){
   const [open,{setTrue,setFalse}] = useBoolean()
 
   return <>
