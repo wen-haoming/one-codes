@@ -3,7 +3,7 @@ import { parse } from '@/utils/parse';
 import { useSnapshot } from 'valtio';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { vscodeDark, vscodeDarkInit } from '@uiw/codemirror-theme-vscode';
+import { vscodeDark, } from '@uiw/codemirror-theme-vscode';
 
 export const Code = () => {
   const idSchemaSnap = useSnapshot(idSchema);

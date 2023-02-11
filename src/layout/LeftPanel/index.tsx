@@ -1,7 +1,7 @@
 import { AppstoreOutlined, BarsOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { AutoComplete, Button, Input, Modal, Segmented, Space, Spin } from 'antd';
 import { useEffect, useState, startTransition, useDeferredValue } from 'react';
-import { useRequest } from 'ahooks'
+import { useRequest, useLocalStorageState } from 'ahooks'
 import { depsMap } from '@/store/depsMap';
 import ConfigModal from './ConfigModal';
 
@@ -15,6 +15,7 @@ export type DependencyItem = {
 const LeftPanel = () => {
   const [panelState, setPanelState] = useState<'组件树' | '模块'>('组件树')
   const [depList, setDeplist] = useState<DependencyItem[]>([]);
+  const [depsMapLocal, setDepsMapLocal] = useLocalStorageState('depsMap', { defaultValue: { dependency: [], depsConfig: {} } })
 
   const searchDep = useRequest((name: string) => {
     return fetch(
@@ -36,8 +37,20 @@ const LeftPanel = () => {
   const searchDepDeferredVal = useDeferredValue(searchDep.data || [])
 
   useEffect(() => {
+    depsMap.dependency = depsMapLocal.dependency
+    depsMap.depsConfig = depsMapLocal.depsConfig;
+    setDeplist(depsMapLocal.dependency)
+  }, [])
+
+  useEffect(() => {
     depsMap.dependency = depList;
+    setDepsMapLocal({
+      ...depsMapLocal,
+      dependency:depList as any
+    })
   }, [depList])
+  
+
 
   return <div className="w-200px border-brand-line flex flex-col">
     <Segmented

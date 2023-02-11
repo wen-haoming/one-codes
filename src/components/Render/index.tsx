@@ -19,7 +19,7 @@ function Render() {
   const iframeDocRef = useRef<Document | null>(null)
 
   useEffect(() => {
-    if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document) {
+    if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document && iframeRef.current?.contentWindow?.document) {
       iframeDocRef.current = iframeRef.current?.contentWindow?.document;
       iframeDocRef.current.documentElement.style.width = '100%'
       iframeDocRef.current.documentElement.style.height = '100%'
