@@ -7,7 +7,7 @@ import reactElementToJSXString from 'react-element-to-jsx-string';
 // 分析依赖
 export const getImports = (uiTree: UiItem[]) => {
   const importMap = uiTree.reduce<Record<string, string | string[]>>(
-    (pre, uiTreeItem) => {
+    (pre, uiTreeItem:any) => {
       const {
         importDefault,
         import: importName,
@@ -40,7 +40,7 @@ export const getImports = (uiTree: UiItem[]) => {
     .join(`\n`);
 };
 
-const getJsx = (getIdSchema: IdSchema, getSchemaMap: SchemaMap) => {
+const getJsx = (getIdSchema: IdSchema, getSchemaMap: any) => {
 
   const jsxEle = ({ idSchema }: { idSchema: IdSchema }) => {
     return idSchema.map(schema => {

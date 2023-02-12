@@ -13,5 +13,5 @@ const random = () => Math.floor(Math.random() * 100000).toString(16);
 
 if (container) {
   const root = createRoot(container);
-  root.render(<App install={[]} />)
+  root.render(<App  />)
 }

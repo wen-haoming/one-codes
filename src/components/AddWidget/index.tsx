@@ -28,9 +28,9 @@ const AddWidget = (props: {
       content={
         <div className="w-350px min-h-200px z-9999999999999 p-15px" >
           {
-            Object.entries(depsMapSnap.depsConfig).map(([moduleName, depsList]) => {
-              return (depsList.moduleConfig||[]).length > 0 ? <div key={moduleName}>
-                <span className="m-0 text-gray text-1 text-16px">{moduleName}</span>
+            Object.entries(depsMapSnap.depsConfig).map(([libraryName, depsList]) => {
+              return (depsList.moduleConfig||[]).length > 0 ? <div key={libraryName}>
+                <span className="m-0 text-gray text-1 text-16px">{libraryName}</span>
                 <div className="flex flex-row flex-wrap">
                   {
                     depsList.moduleConfig.map((componentItem, idx2) => {
@@ -69,7 +69,8 @@ const AddWidget = (props: {
                             props: {},
                             isSlot: isSlot,
                             componentName:componentItem.moduleName,
-                            path: path
+                            path: path,
+                            libraryName
                           };
                           setOpen(false);
                         }
