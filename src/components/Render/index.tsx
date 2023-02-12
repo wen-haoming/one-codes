@@ -14,13 +14,12 @@ const sandboxAttr = [
 ].join(' ')
 
 function Render() {
-  const depsMapSnap = useSnapshot(store.depsMap)
+  const depsMapSnap = useSnapshot(store).depsMap
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const iframeDocRef = useRef<Document | null>(null);
   const [srcdocState, setSrcdocState] = useState(srcDocText)
-  const idSchemaSnap = useSnapshot(store.idSchema)
-  const schemaMapSnap = useSnapshot(store.schemaMap)
-   useSnapshot(store)
+  const idSchemaSnap = useSnapshot(store).idSchema
+  const schemaMapSnap = useSnapshot(store).schemaMap
 
   useEffect(() => {
     if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document && iframeRef.current?.contentWindow?.document) {
@@ -29,22 +28,17 @@ function Render() {
   }, [])
 
   useEffect(() => {
-    if (depsMapSnap.dependency) {
-      const scriptText = depsMapSnap.dependency.map((dependency, idx) => {
-        const script = document.createElement('script');
-        script.setAttribute('data-sandbox-script', dependency.label);
-        script.src = dependency.latest;
-        iframeRef.current?.contentWindow?.document?.body?.appendChild(script)
-        return `<script data-sandbox-script=${dependency.label}  src="${dependency.latest}"> </script>`
-      }).join(`\r`)
-      setSrcdocState(srcDocText + scriptText);
-    }
-  }, [depsMapSnap.dependency])
-
-  useEffect(() => {
     if (depsMapSnap.dependency.length === 0) {
       return
     }
+
+    const scriptText = depsMapSnap.dependency.map((dependency, idx) => {
+      const script = document.createElement('script');
+      script.setAttribute('data-sandbox-script', dependency.label);
+      script.src = dependency.latest;
+      iframeRef.current?.contentWindow?.document?.body?.appendChild(script)
+      return `<script data-sandbox-script=${dependency.label}  src="${dependency.latest}"> </script>`
+    }).join(`\r`)
 
     const getDependModuleMap = Object.values(schemaMapSnap).reduce<Record<string, string[]>>((pre, value) => {
       if (pre[value.libraryName]) {
@@ -69,29 +63,36 @@ function Render() {
       const componentPath = schemaMapSnap[id].path
       const componentProps = schemaMapSnap[id].props || {};
 
+      const defaultProps = (schemaMapSnap[id].defaultProps || []).reduce<Record<string,any>>((pre,cur)=>{
+        if(cur.propsName){
+          pre[cur.propsName] = cur.propsValue
+        }
+        return pre
+      },{});
+
       if (componentIsSlot) {
-        return `<${componentName} ></${componentName}>`
+        return `<${componentName} {...${JSON.stringify(defaultProps)}}></${componentName}>`
       }
 
-      return `<${componentName} />`
+      return `<${componentName} {...${JSON.stringify(defaultProps)}} />`
     }).join('')
 
     const componentJsx = `
           ${dependModuleMapString}
-    
           const App =  () => {
             return  <div>
             ${reactRender}
             </div>
         }
-
        window.ReactDOM.render(<App />, document.getElementById('root'));
   `
-    const str = srcdocState.replace(/(<script type="text\/babel">)([.\s\S]*?)(<\/script>)/g, `$1${componentJsx}$3`);
+    const str = srcdocState.replace(/(<script type="text\/babel">)([.\s\S]*?)(<\/script>)/g, `$1${componentJsx}$3`)
+                .replace('<!-- scripts -->',scriptText)
+  
     setSrcdocState(str)
   }, [idSchemaSnap,schemaMapSnap])
 
-  console.log(idSchemaSnap, 'idSchemaSnap')
+
   return <iframe srcDoc={srcdocState} sandbox={sandboxAttr} ref={iframeRef} className="border-none w-100% h-100%"></iframe>
 }
 

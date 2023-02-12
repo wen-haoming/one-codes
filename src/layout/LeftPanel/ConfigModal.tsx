@@ -5,6 +5,7 @@ import { DependencyItem } from '.';
 import AddBtn from './AddBtn';
 import { store } from '@/store';
 import {  useSnapshot } from 'valtio';
+import { JSONProps } from './JSONView';
 
 const { Item } = Form
 
@@ -13,6 +14,7 @@ export type ModuleComponent = {
   moduleConfig: {
     moduleName: string;
     isSlot: boolean;
+    defaultProps?: JSONProps[];
   }[]
 }
 

@@ -1,20 +1,6 @@
 import { Button, Form, Space, Input, Popover, Switch, Badge } from "antd";
 import { CodepenOutlined, PlusOutlined } from '@ant-design/icons'
-
-
-// export type Install = {
-//   typeName: string,
-//   icon?: string;
-//   children: {
-//     title?: string;
-//     component: any;
-//     componentName: string,
-//     configProps?: any[];
-//     isSlot?: boolean;
-//     defaultProps?: any;
-//   }[]
-// }[]
-
+import JSONView from './JSONView';
 
 function AddBtn(props: {
   value?: any[];
@@ -45,6 +31,9 @@ function AddBtn(props: {
                   >
                     <Switch />
                   </Form.Item>
+                  <Form.Item name={[name, 'defaultProps']} label="默认属性">
+                    <JSONView />
+                  </Form.Item>
                   <Button block danger type="primary" onClick={() => {
                     remove(name);
                     onChange && onChange(fields)
@@ -52,7 +41,7 @@ function AddBtn(props: {
                 </div>
               </Space>}>
                 <Form.Item dependencies={[name]}>
-                  {({ getFieldValue, getFieldError}) => {
+                  {({ getFieldValue, getFieldError }) => {
                     const isError = getFieldError(['moduleConfig', id, 'moduleName']).length > 0;
                     const { moduleName } = (getFieldValue('moduleConfig')[id]) || {}
                     return <div

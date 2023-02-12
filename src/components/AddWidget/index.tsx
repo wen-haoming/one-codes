@@ -5,6 +5,7 @@ import { Button, Popover } from 'antd';
 import { ReactElement, useState } from 'react';
 import get from 'lodash.get'
 import { useSnapshot } from 'valtio';
+import { JSONProps } from '@/layout/LeftPanel/JSONView';
 
 const AddWidget = (props: {
   slotId?: string; // 嵌套在哪个组件的id
@@ -13,7 +14,7 @@ const AddWidget = (props: {
   const { slotId } = props;
   const [open, setOpen] = useState(false);
   const depsMapSnap = useSnapshot(store.depsMap)
-  
+
   return (
     <Popover
       overlayClassName="p-0"
@@ -29,7 +30,7 @@ const AddWidget = (props: {
         <div className="w-350px min-h-200px z-9999999999999 p-15px" >
           {
             Object.entries(depsMapSnap.depsConfig).map(([libraryName, depsList]) => {
-              return (depsList.moduleConfig||[]).length > 0 ? <div key={libraryName}>
+              return (depsList.moduleConfig || []).length > 0 ? <div key={libraryName}>
                 <span className="m-0 text-gray text-1 text-16px">{libraryName}</span>
                 <div className="flex flex-row flex-wrap">
                   {
@@ -68,9 +69,10 @@ const AddWidget = (props: {
                           store.schemaMap[id] = {
                             props: {},
                             isSlot: isSlot,
-                            componentName:componentItem.moduleName,
+                            componentName: componentItem.moduleName,
                             path: path,
-                            libraryName
+                            libraryName,
+                            defaultProps: (componentItem.defaultProps || []) as JSONProps[]
                           };
                           setOpen(false);
                         }

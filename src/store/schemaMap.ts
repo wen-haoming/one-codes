@@ -1,3 +1,5 @@
+import { JSONProps } from "@/layout/LeftPanel/JSONView";
+
 export type UiItem = {
   props: Record<string, any> | null;
   componentName: string; // 组件名称
@@ -5,6 +7,7 @@ export type UiItem = {
   path: string; // 路径
   libraryName:string;
   isSlot?: boolean; //是否支持组件嵌套
+  defaultProps?: JSONProps[]
 };
 
 export type SchemaMap = Record<string, UiItem>;
