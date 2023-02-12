@@ -1,5 +1,5 @@
-import { Button, Form, Space, Input, Popover, Switch } from "antd";
-import { PlusOutlined } from '@ant-design/icons'
+import { Button, Form, Space, Input, Popover, Switch, Badge } from "antd";
+import { CodepenOutlined, PlusOutlined } from '@ant-design/icons'
 
 
 // export type Install = {
@@ -52,11 +52,18 @@ function AddBtn(props: {
                 </div>
               </Space>}>
                 <Form.Item dependencies={[name]}>
-                  {({ getFieldValue }) => {
+                  {({ getFieldValue, getFieldError}) => {
+                    const isError = getFieldError(['moduleConfig', id, 'moduleName']).length > 0;
                     const { moduleName } = (getFieldValue('moduleConfig')[id]) || {}
-                    return <Button >
+                    return <div
+                      className={`widgetBtn flex-1 text-2 flex items-center border-red border-${isError ? '1' : "0"}px`}
+                    >
+                      <CodepenOutlined
+                        style={{ color: '#2558fb' }}
+                        className="m-r-3 text-4"
+                      />
                       {moduleName || 'module'}
-                    </Button>
+                    </div>
                   }}
                 </Form.Item>
               </Popover>

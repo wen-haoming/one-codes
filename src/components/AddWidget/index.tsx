@@ -30,68 +30,65 @@ const AddWidget = (props: {
       content={
         <div className="w-350px min-h-200px z-9999999999999 p-15px" >
           {
-            Object.entries(depsMapSnap.depsConfig).map(([moduleName,depsList])=>{
-             return  depsList.moduleConfig.length && <div  key={moduleName}>
-              <span className="m-0 text-gray text-1 text-16px">{moduleName}</span>
-              <div className="flex flex-row flex-wrap">
-                {
-                  depsList.moduleConfig.map((dependencyItem, idx2) => {
-                    return <div
-                      className="widgetBtn flex-1 text-2 flex items-center"
-                      onClick={() => {
-                        // const id = getId();
-                        // let path = '';
-                        // if (slotId) {
-                        //   const target = get(idSchema, schemaMap[slotId].path);
-                        //   if (target) {
-                        //     if (target.slot) {
-                        //       target.slot.push({
-                        //         id,
-                        //       });
-                        //     } else {
-                        //       target.slot = [({
-                        //         id,
-                        //       })]
-                        //     }
-                        //   }
-                        //   if (schemaMap[slotId].path) {
-                        //     path = `${schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
-                        //     console.log(JSON.stringify(idSchema), path);
-                        //   } else {
-                        //     path = `[${target.slot.length - 1}]`
-                        //   }
-                        // } else {
-                        //   idSchema.push({
-                        //     id,
-                        //   });
-                        //   path = `[${idSchema.length - 1}]`
-                        // }
-                        // schemaMap[id] = {
-                        //   props: ele.defaultProps || null,
-                        //   component: ele.component,
-                        //   componentName: ele.componentName,
-                        //   configProps: ele.configProps,
-                        //   path: path
-                        // };
-                        // setOpen(false);
-                      }
-                      }
-                      key={dependencyItem.moduleName}
-                    >
-                      <CodepenOutlined
-                        style={{ color: '#2558fb' }}
-                        className="m-r-3 text-4"
-                      />
-                      {dependencyItem.moduleName}
-                    </div>
-                  })
-                }
-              </div>
-            </div>
+            Object.entries(depsMapSnap.depsConfig).map(([moduleName, depsList]) => {
+              return (depsList.moduleConfig||[]).length > 0 ? <div key={moduleName}>
+                <span className="m-0 text-gray text-1 text-16px">{moduleName}</span>
+                <div className="flex flex-row flex-wrap">
+                  {
+                    depsList.moduleConfig.map((componentItem, idx2) => {
+                      const { isSlot, moduleName } = componentItem
+                      return <div
+                        className="widgetBtn flex-1 text-2 flex items-center"
+                        onClick={() => {
+                          const id = getId();
+                          let path = '';
+                          if (slotId) {
+                            const target = get(idSchema, schemaMap[slotId].path);
+                            if (target) {
+                              if (target.slot) {
+                                target.slot.push({
+                                  id,
+                                });
+                              } else {
+                                target.slot = [({
+                                  id,
+                                })]
+                              }
+                            }
+                            if (schemaMap[slotId].path) {
+                              path = `${schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
+                            } else {
+                              path = `[${target.slot.length - 1}]`
+                            }
+                          } else {
+                            idSchema.push({
+                              id,
+                            });
+                            path = `[${idSchema.length - 1}]`
+                          }
+                          schemaMap[id] = {
+                            props: {},
+                            isSlot: isSlot,
+                            componentName:componentItem.moduleName,
+                            // configProps: ele.configProps,
+                            path: path
+                          };
+                          setOpen(false);
+                        }
+                        }
+                        key={componentItem.moduleName}
+                      >
+                        <CodepenOutlined
+                          style={{ color: '#2558fb' }}
+                          className="m-r-3 text-4"
+                        />
+                        {componentItem.moduleName}
+                      </div>
+                    })
+                  }
+                </div>
+              </div> : null
             })
-            // globalProps.install.map((item, idx) => {
-            //   return 
-            // })
           }
         </div>
       }

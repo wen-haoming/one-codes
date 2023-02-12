@@ -1,4 +1,4 @@
-import { Form, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import { useBoolean, useLocalStorageState } from 'ahooks'
 import { ReactElement, cloneElement, useEffect } from 'react';
 import { DependencyItem } from '.';
@@ -23,7 +23,7 @@ function ConfigModal(props: {
   const [open, { setTrue, setFalse }] = useBoolean();
   const [form] = Form.useForm()
   const depsMapSnap = useSnapshot(depsMap);
-  const [depsMapLocal, setDepsMapLocal] = useLocalStorageState('depsMap')
+  // const [depsMapLocal, setDepsMapLocal] = useLocalStorageState('depsMap')
 
   useEffect(() => {
     if (open && depsMapSnap.depsConfig[label]) {
@@ -31,22 +31,26 @@ function ConfigModal(props: {
     }
   }, [open, depsMapSnap.depsConfig[label]])
 
-  
-
-
   const onFinish = async () => {
     const values = await form.validateFields();
     depsMap.depsConfig[label] = values;
-    setDepsMapLocal(ref(depsMap))
+    // setDepsMapLocal(ref(depsMap))
     setFalse();
     form.resetFields();
   }
-
   return <>
     {cloneElement(props.children, {
       onClick: setTrue
     })}
-    <Modal title={`${label}-${version}`} width={600} open={open} onOk={onFinish} onCancel={setFalse}>
+    <Modal title={`${label}-${version}`} width={600} open={open} onOk={onFinish} onCancel={setFalse} footer={[
+      <Button type="primary" danger key="delete" onClick={() => {
+        depsMap.dependency = depsMap.dependency.filter(item => item.label !== label);
+        delete depsMap.depsConfig[label]
+        setFalse();
+      }}>删除改库</Button>,
+      <Button key="cancel" onClick={setFalse}>取消</Button>,
+      <Button type="primary" key="confirm" onClick={onFinish}>确认</Button>,
+    ]}>
       <Form form={form} labelCol={{ span: 5 }}>
         <Item rules={[{ required: true }]} label="moduleName" name="moduleName">
           <Input />
