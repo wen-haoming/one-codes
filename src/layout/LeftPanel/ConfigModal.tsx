@@ -3,8 +3,8 @@ import { useBoolean, useLocalStorageState } from 'ahooks'
 import { ReactElement, cloneElement, useEffect } from 'react';
 import { DependencyItem } from '.';
 import AddBtn from './AddBtn';
-import { depsMap } from '@/store/depsMap';
-import { ref, useSnapshot } from 'valtio';
+import { store } from '@/store';
+import {  useSnapshot } from 'valtio';
 
 const { Item } = Form
 
@@ -22,8 +22,7 @@ function ConfigModal(props: {
   const { label, version } = props;
   const [open, { setTrue, setFalse }] = useBoolean();
   const [form] = Form.useForm()
-  const depsMapSnap = useSnapshot(depsMap);
-  // const [depsMapLocal, setDepsMapLocal] = useLocalStorageState('depsMap')
+  const depsMapSnap = useSnapshot(store.depsMap);
 
   useEffect(() => {
     if (open && depsMapSnap.depsConfig[label]) {
@@ -33,7 +32,7 @@ function ConfigModal(props: {
 
   const onFinish = async () => {
     const values = await form.validateFields();
-    depsMap.depsConfig[label] = values;
+    store.depsMap.depsConfig[label] = values;
     // setDepsMapLocal(ref(depsMap))
     setFalse();
     form.resetFields();
@@ -44,8 +43,8 @@ function ConfigModal(props: {
     })}
     <Modal title={`${label}-${version}`} width={600} open={open} onOk={onFinish} onCancel={setFalse} footer={[
       <Button type="primary" danger key="delete" onClick={() => {
-        depsMap.dependency = depsMap.dependency.filter(item => item.label !== label);
-        delete depsMap.depsConfig[label]
+        store.depsMap.dependency = store.depsMap.dependency.filter(item => item.label !== label);
+        delete store.depsMap.depsConfig[label]
         setFalse();
       }}>删除改库</Button>,
       <Button key="cancel" onClick={setFalse}>取消</Button>,

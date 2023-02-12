@@ -1,6 +1,7 @@
 import { DownloadOutlined } from '@ant-design/icons';
 
 const Header = () => {
+
   return (
     <>
       <div className="h-10 flex items-center px-4 justify-between border-b-1	 border-brand-grey">
@@ -30,7 +31,7 @@ const Header = () => {
           One-codes
         </span>
         <div className="flex items-center">
-          <div className="btn m-r1" onClick={() => {}}>
+          <div className="btn m-r1" onClick={() => { }}>
             <DownloadOutlined className="m-r-1" />
             出码
           </div>

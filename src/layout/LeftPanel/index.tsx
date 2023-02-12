@@ -1,10 +1,10 @@
 import { AppstoreOutlined, BarsOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { AutoComplete, Button, Input, Modal, Segmented, Space, Spin } from 'antd';
-import { useEffect, useState, startTransition, useDeferredValue } from 'react';
-import { useRequest, useLocalStorageState } from 'ahooks'
-import { depsMap } from '@/store/depsMap';
+import { useState, startTransition, useDeferredValue } from 'react';
+import { useRequest } from 'ahooks'
+import { store } from '@/store';
 import ConfigModal from './ConfigModal';
-import { ref, useSnapshot } from 'valtio';
+import { useSnapshot } from 'valtio';
 
 export type DependencyItem = {
   label: string;
@@ -15,9 +15,8 @@ export type DependencyItem = {
 
 const LeftPanel = () => {
   const [panelState, setPanelState] = useState<'组件树' | '模块'>('组件树')
-  const [depsMapLocal, setDepsMapLocal] = useLocalStorageState('depsMap', { defaultValue: { dependency: [], depsConfig: {} } })
-  const depsMapSnap = useSnapshot(depsMap);
-
+  const depsMapSnap  = useSnapshot(store.depsMap);
+  
   const searchDep = useRequest((name: string) => {
     return fetch(
       `https://api.cdnjs.com/libraries?search=${name}`,
@@ -36,15 +35,6 @@ const LeftPanel = () => {
   }, { manual: true, debounceWait: 300 })
 
   const searchDepDeferredVal = useDeferredValue(searchDep.data || []);
-
-  useEffect(() => {
-    depsMap.dependency = depsMapLocal.dependency
-    depsMap.depsConfig = depsMapLocal.depsConfig;
-  }, [])
-
-  useEffect(() => {
-    setDepsMapLocal(ref(depsMapSnap) as any)
-  }, [depsMapSnap])
 
   return <div className="w-200px border-brand-line flex flex-col">
     <Segmented
@@ -76,9 +66,9 @@ const LeftPanel = () => {
             options={searchDepDeferredVal}
             onSearch={searchDep.run}
             onSelect={(val, item) => {
-              if (depsMap.dependency.findIndex((dep) => dep.label === item.label) === -1) {
+              if (store.depsMap.dependency.findIndex((dep) => dep.label === item.label) === -1) {
                 startTransition(() => {
-                  depsMap.dependency = [...depsMap.dependency, {
+                  store.depsMap.dependency = [...store.depsMap.dependency, {
                     label: item.label,
                     value: item.label,
                     latest: item.latest,
@@ -92,7 +82,7 @@ const LeftPanel = () => {
           </AutoComplete>
           <div className='p-t-8px w-100%'>
             {
-              (depsMap.dependency || []).map((depButton) => {
+              (depsMapSnap.dependency || []).map((depButton) => {
                 return <ConfigModal {...depButton} key={depButton.label}>
                   <Button type="text" className='m-b-8px flex justify-between' block key={depButton.label}>
                     <span>{depButton.label}</span>

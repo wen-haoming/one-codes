@@ -1,8 +1,7 @@
-import { currentState, IdSchema, idSchema, schemaMap } from '@/store';
+import { IdSchema, store } from '@/store';
 import { CloseOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, ConfigProvider, Input, Tooltip } from 'antd';
 import { FC, ReactNode, useEffect, useState, Children, useMemo } from 'react';
-import { findDOMNode } from 'react-dom'
 import { memo } from 'react';
 import { useSnapshot } from 'valtio';
 import AddWidget from '../AddWidget';
@@ -15,9 +14,9 @@ interface ComponentProps {
 
 const Wrapper: FC<ComponentProps> = (props) => {
   const { id, isSlot } = props;
-  const currentStateSnap = useSnapshot(currentState);
-  const schemaMapSnap = useSnapshot(schemaMap);
-  const [wrapperDisplay,setWrapperDisplay] = useState<'inline-block'|'block' | '' >('')
+  const currentStateSnap = useSnapshot(store.currentState);
+  const schemaMapSnap = useSnapshot(store.schemaMap);
+  const [wrapperDisplay, setWrapperDisplay] = useState<'inline-block' | 'block' | ''>('')
   const [operatorData, setOperatorData] = useState({
     x: 0,
     y: 0,
@@ -35,24 +34,24 @@ const Wrapper: FC<ComponentProps> = (props) => {
         return false
       })
     }
-    searchId(idSchema)
+    searchId(store.idSchema)
     Promise.resolve().then(() => {
-      delete currentState.id;
-      delete schemaMap[id];
+      delete store.currentState.id;
+      delete store.schemaMap[id];
     });
   };
 
   const cancel = () => {
     Promise.resolve().then(() => {
-      delete currentState.id;
+      delete store.currentState.id;
     });
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const wrapperDom = document.getElementById(id);
-    if(props.children && Children.count(props.children) === 1 && wrapperDom && wrapperDom.childNodes[0] ){
-      setWrapperDisplay(window.getComputedStyle(wrapperDom.childNodes[0]  as any).display as any || '');
-    } 
+    if (props.children && Children.count(props.children) === 1 && wrapperDom && wrapperDom.childNodes[0]) {
+      setWrapperDisplay(window.getComputedStyle(wrapperDom.childNodes[0] as any).display as any || '');
+    }
     if (id === currentStateSnap.id) {
       // const currentSelectDom = document.getElementById(id);
       const right = wrapperDom?.getBoundingClientRect().right;
@@ -64,13 +63,13 @@ const Wrapper: FC<ComponentProps> = (props) => {
         })
       }
     }
-  },[id, currentStateSnap.id])
+  }, [id, currentStateSnap.id])
 
   return <>
     <div id={id} className={`hover:editor-hover z-10 m-b1 m-r1 ${id === currentStateSnap.id && 'editor-hover'} ${wrapperDisplay}`} onClick={(e) => {
       e.stopPropagation();
       e.cancelable = true;
-      currentState.id = id;
+      store.currentState.id = id;
     }}>
       {
         props.children

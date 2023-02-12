@@ -1,5 +1,4 @@
-import { idSchema, schemaMap } from "@/store";
-import { depsMap } from "@/store/depsMap";
+import { store } from "@/store";
 import { useEffect, useRef, useState } from "react"
 import { ref, useSnapshot } from "valtio";
 import srcDocText from './srcdoc.html?raw';
@@ -15,12 +14,12 @@ const sandboxAttr = [
 ].join(' ')
 
 function Render() {
-  const depsMapSnap = useSnapshot(depsMap)
+  const depsMapSnap = useSnapshot(store.depsMap)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const iframeDocRef = useRef<Document | null>(null);
   const [srcdocState, setSrcdocState] = useState(srcDocText)
-  const idSchemaSnap = useSnapshot(idSchema)
-  const schemaMapSnap = useSnapshot(schemaMap)
+  const idSchemaSnap = useSnapshot(store.idSchema)
+  const schemaMapSnap = useSnapshot(store.schemaMap)
 
   useEffect(() => {
     if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document && iframeRef.current?.contentWindow?.document) {
@@ -41,10 +40,6 @@ function Render() {
     }
   }, [depsMapSnap.dependency])
 
-  useEffect(()=>{
-    console.log(ref(idSchemaSnap))
-    console.log(ref(schemaMapSnap))
-  },[idSchemaSnap])
 
   return <iframe srcDoc={srcdocState} sandbox={sandboxAttr} ref={iframeRef} className="border-none w-100% h-100%"></iframe>
 }

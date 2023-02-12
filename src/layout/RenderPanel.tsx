@@ -1,5 +1,5 @@
 import Code from '@/components/Code';
-import { currentState } from '@/store';
+import { currentState ,store} from '@/store';
 import { FileTextOutlined, FormOutlined, PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Space, Tooltip } from 'antd';
 import { useSnapshot } from 'valtio';
@@ -7,7 +7,7 @@ import Render from '@/components/Render';
 import AddWidget from '@/components/AddWidget';
 
 const RenderPanel = () => {
-  const currentStateSnap = useSnapshot(currentState);
+  const currentStateSnap = useSnapshot(store.currentState);
 
   return (
     <div className="flex flex-col flex-1 bg-brand-grey p-t-0">

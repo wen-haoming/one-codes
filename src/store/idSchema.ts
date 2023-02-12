@@ -1,4 +1,3 @@
-import { proxy } from 'valtio';
 
 export type IdSchema = {
   id: string;
@@ -7,4 +6,4 @@ export type IdSchema = {
   }[];
 }[];
 
-export const idSchema = proxy<IdSchema>([]);
+export const idSchema:IdSchema = [];

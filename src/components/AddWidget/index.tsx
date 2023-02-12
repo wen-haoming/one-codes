@@ -1,11 +1,10 @@
-import { idSchema, globalProps, schemaMap, IdSchema } from '@/store';
+import { store } from '@/store';
 import { getId } from '@/utils';
 import { CodepenOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import { ReactElement, useState } from 'react';
 import get from 'lodash.get'
 import { useSnapshot } from 'valtio';
-import { depsMap } from '@/store/depsMap';
 
 const AddWidget = (props: {
   slotId?: string; // 嵌套在哪个组件的id
@@ -13,9 +12,8 @@ const AddWidget = (props: {
 }) => {
   const { slotId } = props;
   const [open, setOpen] = useState(false);
-  const depsMapSnap = useSnapshot(depsMap)
-
-
+  const depsMapSnap = useSnapshot(store.depsMap)
+  
   return (
     <Popover
       overlayClassName="p-0"
@@ -42,8 +40,9 @@ const AddWidget = (props: {
                         onClick={() => {
                           const id = getId();
                           let path = '';
+                          // 
                           if (slotId) {
-                            const target = get(idSchema, schemaMap[slotId].path);
+                            const target = get(store.idSchema, store.schemaMap[slotId].path);
                             if (target) {
                               if (target.slot) {
                                 target.slot.push({
@@ -55,22 +54,21 @@ const AddWidget = (props: {
                                 })]
                               }
                             }
-                            if (schemaMap[slotId].path) {
-                              path = `${schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
+                            if (store.schemaMap[slotId].path) {
+                              path = `${store.schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
                             } else {
                               path = `[${target.slot.length - 1}]`
                             }
                           } else {
-                            idSchema.push({
+                            store.idSchema.push({
                               id,
                             });
-                            path = `[${idSchema.length - 1}]`
+                            path = `[${store.idSchema.length - 1}]`
                           }
-                          schemaMap[id] = {
+                          store.schemaMap[id] = {
                             props: {},
                             isSlot: isSlot,
                             componentName:componentItem.moduleName,
-                            // configProps: ele.configProps,
                             path: path
                           };
                           setOpen(false);
@@ -95,12 +93,6 @@ const AddWidget = (props: {
     >
       <Button size="small" className='text-brand-primary' type="link"
         icon={<PlusSquareOutlined />} />
-      {/* <Button
-        className='bg-brand-primary  text-white	text-10px cursor-pointer p-8px'
-        type="primary"
-        icon={<PlusOutlined
-          style={{ fontSize: 12 }}
-        />} /> */}
     </Popover>
   );
 };
