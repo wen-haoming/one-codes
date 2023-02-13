@@ -1,5 +1,3 @@
-import { DependencyItem } from '@/layout/LeftPanel';
-import { ModuleComponent } from '@/layout/LeftPanel/ConfigModal';
+import { DependencyConfig } from '@/App';
 
-export const depsMap:{ dependency: DependencyItem[], depsConfig: Record<string, ModuleComponent> } = ({ dependency: [], depsConfig: {} })
-
+export const dependencyConfig: DependencyConfig = []

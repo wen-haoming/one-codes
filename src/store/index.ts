@@ -1,6 +1,6 @@
 import { proxy } from 'valtio';
 import { currentState } from './currentState';
-import { depsMap } from './depsMap';
+import { dependencyConfig } from './depsMap';
 import { idSchema } from './idSchema';
 import { schemaMap } from './schemaMap';
 
@@ -13,5 +13,5 @@ export const store = proxy({
   idSchema,
   currentState,
   schemaMap,
-  depsMap
+  dependencyConfig
 })

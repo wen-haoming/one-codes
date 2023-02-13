@@ -14,7 +14,7 @@ const sandboxAttr = [
 ].join(' ')
 
 function Render() {
-  const depsMapSnap = useSnapshot(store).depsMap
+  const depsMapSnap = useSnapshot(store).dependencyConfig
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const iframeDocRef = useRef<Document | null>(null);
   const [srcdocState, setSrcdocState] = useState(srcDocText)
@@ -28,16 +28,12 @@ function Render() {
   }, [])
 
   useEffect(() => {
-    if (depsMapSnap.dependency.length === 0) {
+    if (depsMapSnap.length === 0) {
       return
     }
 
-    const scriptText = depsMapSnap.dependency.map((dependency, idx) => {
-      const script = document.createElement('script');
-      script.setAttribute('data-sandbox-script', dependency.label);
-      script.src = dependency.latest;
-      iframeRef.current?.contentWindow?.document?.body?.appendChild(script)
-      return `<script data-sandbox-script=${dependency.label}  src="${dependency.latest}"> </script>`
+    const scriptText = depsMapSnap.map((dependency, idx) => {
+      return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
     }).join(`\r`)
 
     const getDependModuleMap = Object.values(schemaMapSnap).reduce<Record<string, string[]>>((pre, value) => {
@@ -48,7 +44,6 @@ function Render() {
       }
       return pre
     }, {})
-
     const dependModuleMapString = Object.entries(getDependModuleMap).map(([libraryName, componentName]) => {
       return `const { ${componentName.join(',')} } = ${libraryName};`
     }).join(`\n`)
@@ -76,7 +71,7 @@ function Render() {
 
       return `<${componentName} {...${JSON.stringify(defaultProps)}} />`
     }).join('')
-
+console.log(dependModuleMapString,'dependModuleMapString')
     const componentJsx = `
           ${dependModuleMapString}
           const App =  () => {

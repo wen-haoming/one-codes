@@ -10,7 +10,7 @@ import { JSONProps } from './JSONView';
 const { Item } = Form
 
 export type ModuleComponent = {
-  moduleName: string;
+  libraryName: string;
   moduleConfig: {
     moduleName: string;
     isSlot: boolean;
@@ -53,7 +53,7 @@ function ConfigModal(props: {
       <Button type="primary" key="confirm" onClick={onFinish}>确认</Button>,
     ]}>
       <Form form={form} labelCol={{ span: 5 }}>
-        <Item rules={[{ required: true }]} label="moduleName" name="moduleName">
+        <Item rules={[{ required: true }]} label="libraryName" name="libraryName">
           <Input />
         </Item>
         <Item rules={[{ required: true }]} label="组件配置" >

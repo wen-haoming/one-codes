@@ -1,31 +1,36 @@
+import { DependencyConfig } from '@/App';
 import { store } from '@/store';
 import { useLocalStorageState } from 'ahooks';
 import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 
-export const Store = () => {
+export const Store = (props: {
+  dependencyConfig: DependencyConfig
+}) => {
+  const { dependencyConfig } = props;
+  
   const [schemaMapLocal, setSchemaMapLocal] = useLocalStorageState('schemaMap', {
     defaultValue: {}
   })
   const [idSchemaLocal, setIdSchemaLocal] = useLocalStorageState('idSchema', {
     defaultValue: []
   })
-  const [depsMapLocal, setDepsMapLocal] = useLocalStorageState('depsMap', {
-    defaultValue: { "dependency": [], "depsConfig": {} }
-  })
+
+  // const [depsMapLocal, setDepsMapLocal] = useLocalStorageState('depsMap', {
+  //   defaultValue: { "dependency": [], "depsConfig": {} }
+  // })
 
   const schemaMapSnap = useSnapshot(store.schemaMap);
-  const depsMapSnap = useSnapshot(store.depsMap)
   const idSchemaSnap = useSnapshot(store.idSchema);
+  
   useEffect(() => {
     setIdSchemaLocal(idSchemaSnap as any)
-    setDepsMapLocal(depsMapSnap as any)
     setSchemaMapLocal(schemaMapSnap)
-  }, [idSchemaSnap, schemaMapSnap, depsMapSnap])
+  }, [idSchemaSnap, schemaMapSnap])
 
   useEffect(() => {
     store.schemaMap = schemaMapLocal as any;
-    store.depsMap = depsMapLocal as any;
+    store.dependencyConfig = dependencyConfig;
     store.idSchema = idSchemaLocal as any;
   }, [])
 

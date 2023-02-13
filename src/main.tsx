@@ -13,5 +13,33 @@ const random = () => Math.floor(Math.random() * 100000).toString(16);
 
 if (container) {
   const root = createRoot(container);
-  root.render(<App  />)
+  root.render(<App
+    dependencyConfig={
+      [{
+        libraryName: 'react',
+        libraryGlobalImport: 'React',
+        libraryUrl: 'https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js',
+        libraryVersion: '18.2.0',
+      }, {
+        libraryName: 'react-dom',
+        libraryGlobalImport: 'ReactDom',
+        libraryUrl: 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js',
+        libraryVersion: '18.2.0',
+      }, {
+        libraryName: 'dayjs',
+        libraryUrl: 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+        libraryVersion: '1.11.7',
+      },
+      {
+        libraryName: 'antd',
+        libraryGlobalImport: 'antd',
+        libraryUrl: 'https://cdnjs.cloudflare.com/ajax/libs/antd/5.2.1/antd.min.js',
+        libraryVersion: '5.2.1',
+        moduleConfig: [{
+          moduleName: 'Button',
+          isSlot: false,
+          defaultProps: [{ 'propsName': 'children', propsValue: 'button' }]
+        }]
+      }
+      ]} />)
 }

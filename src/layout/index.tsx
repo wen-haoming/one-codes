@@ -10,7 +10,7 @@ const Layout = () => {
     <div className="flex flex-col relative w-full	h-full">
       <Header />
       <div className="flex flex-1">
-        <Store/>
+       
         <LeftPanel />
         <RenderPanel />
         <RightPanel />
