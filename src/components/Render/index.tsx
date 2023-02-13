@@ -35,6 +35,9 @@ function Render() {
     const scriptText = depsMapSnap.map((dependency, idx) => {
       return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
     }).join(`\r`)
+    const linkText = depsMapSnap.map((dependency,idx)=>{
+      return dependency.linkUrl?.map(href=> ` <link rel="stylesheet" href="${href}"></link>`  ).join('\n')
+    }).join('\n')
 
     const getDependModuleMap = Object.values(schemaMapSnap).reduce<Record<string, string[]>>((pre, value) => {
       if (pre[value.libraryName]) {
@@ -83,6 +86,7 @@ console.log(dependModuleMapString,'dependModuleMapString')
   `
     const str = srcdocState.replace(/(<script type="text\/babel">)([.\s\S]*?)(<\/script>)/g, `$1${componentJsx}$3`)
                 .replace('<!-- scripts -->',scriptText)
+                .replace(`<!-- links -->`,linkText)
   
     setSrcdocState(str)
   }, [idSchemaSnap,schemaMapSnap])

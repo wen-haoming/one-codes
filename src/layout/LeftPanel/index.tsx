@@ -1,9 +1,7 @@
-import { AppstoreOutlined, BarsOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
-import { AutoComplete, Button, Input, Modal, Segmented, Space, Spin } from 'antd';
-import { useState, startTransition, useDeferredValue } from 'react';
-import { useRequest } from 'ahooks'
+import { AppstoreOutlined, BarsOutlined } from '@ant-design/icons';
+import { Button, Segmented } from 'antd';
+import { useState } from 'react';
 import { store } from '@/store';
-import ConfigModal from './ConfigModal';
 import { useSnapshot } from 'valtio';
 
 export type DependencyItem = {
@@ -43,6 +41,7 @@ const LeftPanel = () => {
         panelState === '模块' && <div className='p-t-8px w-100%'>
             {
               ((dependencyConfigSnap) || []).map((depButton) => {
+                
                 return  <Button type="text" className='m-b-8px flex justify-between' block key={depButton.libraryName}>
                 <span>{depButton.libraryName}</span>
                 <span className='text-gray'>{depButton.libraryVersion}</span>

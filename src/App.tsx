@@ -14,12 +14,13 @@ type DependencyItem = {
   libraryGlobalImport?: string; // 模块引入名
   libraryUrl: string; // 模块 url
   libraryVersion: string; // 模块 版本
+  linkUrl?:string[]; // 样式文件
   moduleConfig?: { // 组件类别
     moduleName: string;
     isSlot: boolean;
     defaultProps?: JSONProps[]
   }[]
-}
+} 
 
 export type DependencyConfig = DependencyItem[]
 

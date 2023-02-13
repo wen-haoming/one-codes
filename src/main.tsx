@@ -40,6 +40,29 @@ if (container) {
           isSlot: false,
           defaultProps: [{ 'propsName': 'children', propsValue: 'button' }]
         }]
+      },
+      {
+        libraryName: 'semi-ui',
+        libraryGlobalImport: 'SemiUI',
+        libraryUrl: 'https://unpkg.com/@douyinfe/semi-ui@2.27.0/dist/umd/semi-ui.min.js',
+        libraryVersion: '2.27.0',
+        linkUrl: ['https://unpkg.com/@douyinfe/semi-ui@2.27.0/dist/css/semi.css'],
+        moduleConfig: [{
+          moduleName: 'Input',
+          isSlot: false,
+          defaultProps: [{}]
+        }]
+      },
+      {
+        libraryName: 'pro-components',
+        libraryGlobalImport: 'ProComponents',
+        libraryUrl: 'https://unpkg.com/@ant-design/pro-components@2.3.52/dist/components.min.js',
+        libraryVersion: '2.3.52',
+        moduleConfig: [{
+          moduleName: 'ProCard',
+          isSlot: false,
+          defaultProps: [{propsName:'title',propsValue:'默认尺寸'},{propsName:'tooltip',propsValue:'这是提示'}]
+        }]
       }
       ]} />)
 }
