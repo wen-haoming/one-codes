@@ -61,7 +61,7 @@ function Render() {
       const componentPath = schemaMapSnap[id].path
       const componentProps = schemaMapSnap[id].props || {};
 
-      const defaultProps = (ref(schemaMapSnap[id].defaultProps || [])).reduce<Record<string,any>>((pre,cur)=>{
+      const defaultProps = ((schemaMapSnap[id].defaultProps || [])).reduce<Record<string,any>>((pre,cur)=>{
         if(cur && cur.propsName){
           pre[cur.propsName] = cur.propsValue
         }
