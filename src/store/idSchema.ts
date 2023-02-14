@@ -1,3 +1,4 @@
+import { proxy, subscribe } from "valtio";
 
 export type IdSchema = {
   id: string;
@@ -6,4 +7,8 @@ export type IdSchema = {
   }[];
 }[];
 
-export const idSchema:IdSchema = [];
+export const idSchemaState:{idSchema:IdSchema} = proxy((JSON.parse(localStorage.getItem('idSchema') as any))||{idSchema: []});
+
+subscribe(idSchemaState, () => {
+  localStorage.setItem('idSchema', JSON.stringify(idSchemaState))
+})

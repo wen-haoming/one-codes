@@ -1,4 +1,5 @@
 import { JSONProps } from "@/layout/LeftPanel/JSONView";
+import { proxy, subscribe } from "valtio";
 
 export type UiItem = {
   props: Record<string, any> | null;
@@ -12,4 +13,8 @@ export type UiItem = {
 
 export type SchemaMap = Record<string, UiItem>;
 
-export const schemaMap: SchemaMap = ({});
+export const schemaMapState: { schemaMap: SchemaMap } = proxy((JSON.parse(localStorage.getItem('schemaMap') as any))||{ schemaMap: {} });
+
+subscribe(schemaMapState, () => {
+  localStorage.setItem('schemaMap', JSON.stringify(schemaMapState))
+})

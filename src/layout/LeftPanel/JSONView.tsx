@@ -1,6 +1,4 @@
-import { DragOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Table } from 'antd';
-import React, { useEffect, useState } from 'react';
 import { useDynamicList } from 'ahooks';
 
 export interface JSONProps {

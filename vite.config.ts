@@ -7,7 +7,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: '/one-codes/',
   build: {
-    sourcemap:true,
+    sourcemap: true,
     rollupOptions: {
       output: {}
     },

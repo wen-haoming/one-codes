@@ -2,7 +2,6 @@ import Header from './Header';
 import RenderPanel from './RenderPanel';
 import RightPanel from './RightPanel';
 import LeftPanel from './LeftPanel';
-import { Store } from '@/store/Store';
 
 const Layout = () => {
   return (

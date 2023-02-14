@@ -1,5 +1,5 @@
-import { store } from "@/store";
-import { useEffect, useMemo, useRef, useState } from "react"
+import { dependencyConfigState, idSchemaState, schemaMapState } from "@/store";
+import { useEffect, useRef, useState } from "react"
 import { ref, useSnapshot } from "valtio";
 import srcDocText from './srcdoc.html?raw';
 
@@ -14,12 +14,12 @@ const sandboxAttr = [
 ].join(' ')
 
 function Render() {
-  const depsMapSnap = useSnapshot(store).dependencyConfig
+  const depsMapSnap = useSnapshot(dependencyConfigState).dependencyConfigState
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const iframeDocRef = useRef<Document | null>(null);
   const [srcdocState, setSrcdocState] = useState(srcDocText)
-  const idSchemaSnap = useSnapshot(store).idSchema
-  const schemaMapSnap = useSnapshot(store).schemaMap
+  const idSchemaSnap = useSnapshot(idSchemaState).idSchema
+  const schemaMapSnap = useSnapshot(schemaMapState).schemaMap
 
   useEffect(() => {
     if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document && iframeRef.current?.contentWindow?.document) {
@@ -61,12 +61,12 @@ function Render() {
       const componentPath = schemaMapSnap[id].path
       const componentProps = schemaMapSnap[id].props || {};
 
-      const defaultProps = (schemaMapSnap[id].defaultProps || []).reduce<Record<string,any>>((pre,cur)=>{
+      const defaultProps = (ref(schemaMapSnap[id].defaultProps || [])).reduce<Record<string,any>>((pre,cur)=>{
         if(cur.propsName){
           pre[cur.propsName] = cur.propsValue
         }
         return pre
-      },{});
+      },ref({}));
 
       if (componentIsSlot) {
         return `<window.${componentName} {...${JSON.stringify(defaultProps)}}></window.${componentName}>`
@@ -74,7 +74,7 @@ function Render() {
 
       return `<window.${componentName} {...${JSON.stringify(defaultProps)}} />`
     }).join('')
-    
+
     const componentJsx = `
           ${dependModuleMapString}
           const App =  () => {

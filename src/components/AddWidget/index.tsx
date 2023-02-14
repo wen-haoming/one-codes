@@ -1,4 +1,3 @@
-import { store } from '@/store';
 import { getId } from '@/utils';
 import { CodepenOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
@@ -6,6 +5,7 @@ import { ReactElement, useState } from 'react';
 import get from 'lodash.get'
 import { useSnapshot } from 'valtio';
 import { JSONProps } from '@/layout/LeftPanel/JSONView';
+import { dependencyConfigState, idSchemaState, schemaMapState } from '@/store';
 
 const AddWidget = (props: {
   slotId?: string; // 嵌套在哪个组件的id
@@ -13,8 +13,7 @@ const AddWidget = (props: {
 }) => {
   const { slotId } = props;
   const [open, setOpen] = useState(false);
-  const dependencyConfigSnap = useSnapshot(store.dependencyConfig)
-
+  const dependencyConfigSnap = useSnapshot(dependencyConfigState).dependencyConfigState
   return (
     <Popover
       overlayClassName="p-0"
@@ -44,7 +43,7 @@ const AddWidget = (props: {
                           let path = '';
                           // 
                           if (slotId) {
-                            const target = get(store.idSchema, store.schemaMap[slotId].path);
+                            const target = get(idSchemaState.idSchema, schemaMapState.schemaMap[slotId].path);
                             if (target) {
                               if (target.slot) {
                                 target.slot.push({
@@ -56,18 +55,18 @@ const AddWidget = (props: {
                                 })]
                               }
                             }
-                            if (store.schemaMap[slotId].path) {
-                              path = `${store.schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
+                            if (schemaMapState.schemaMap[slotId].path) {
+                              path = `${schemaMapState.schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
                             } else {
                               path = `[${target.slot.length - 1}]`
                             }
                           } else {
-                            store.idSchema.push({
+                            idSchemaState.idSchema.push({
                               id,
                             });
-                            path = `[${store.idSchema.length - 1}]`
+                            path = `[${idSchemaState.idSchema.length - 1}]`
                           }
-                          store.schemaMap[id] = {
+                          schemaMapState.schemaMap[id] = {
                             props: {},
                             isSlot: isSlot,
                             componentName: componentItem.moduleName,

@@ -1,4 +1,4 @@
-import { store, schemaMap } from '@/store';
+import {  currentState, schemaMapState } from '@/store';
 // import { FormRender } from '@antd-one/components';
 // import { Switch, NumberPicker } from '@formily/antd';
 // import { useEffect, useState } from 'react';
@@ -9,8 +9,8 @@ import { ref, useSnapshot } from 'valtio';
 export type Install =  any;
 
 const RightPanel = () => {
-  const currentStateSnap = useSnapshot(store.currentState);
-  const schemaMapSnap = useSnapshot(store.schemaMap);
+  const currentStateSnap = useSnapshot(currentState);
+  const schemaMapSnap = useSnapshot(schemaMapState).schemaMap;
 
   // const [formState, setFormState] = useState<{
   //   form: ReturnType<typeof FormRender.createForm>;
