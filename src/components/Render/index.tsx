@@ -69,12 +69,12 @@ function Render() {
       },{});
 
       if (componentIsSlot) {
-        return `<${componentName} {...${JSON.stringify(defaultProps)}}></${componentName}>`
+        return `<window.${componentName} {...${JSON.stringify(defaultProps)}}></window.${componentName}>`
       }
 
-      return `<${componentName} {...${JSON.stringify(defaultProps)}} />`
+      return `<window.${componentName} {...${JSON.stringify(defaultProps)}} />`
     }).join('')
-console.log(dependModuleMapString,'dependModuleMapString')
+    
     const componentJsx = `
           ${dependModuleMapString}
           const App =  () => {
