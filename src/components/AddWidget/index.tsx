@@ -72,7 +72,7 @@ const AddWidget = (props: {
                             componentName: componentItem.moduleName,
                             path: path,
                             libraryName: dependencyItem.libraryGlobalImport!,
-                            defaultProps: (componentItem.defaultProps || []) as JSONProps[]
+                            defaultProps: [...(componentItem.defaultProps || []) as JSONProps[]]
                           };
                           setOpen(false);
                         }

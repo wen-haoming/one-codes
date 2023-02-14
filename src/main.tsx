@@ -50,7 +50,7 @@ if (container) {
         moduleConfig: [{
           moduleName: 'Input',
           isSlot: false,
-          defaultProps: [{}]
+          defaultProps: []
         }]
       },
       {
