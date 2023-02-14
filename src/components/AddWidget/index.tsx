@@ -3,7 +3,7 @@ import { CodepenOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import { ReactElement, useState } from 'react';
 import get from 'lodash.get'
-import { useSnapshot } from 'valtio';
+import { ref, useSnapshot } from 'valtio';
 import { JSONProps } from '@/layout/LeftPanel/JSONView';
 import { dependencyConfigState, idSchemaState, schemaMapState } from '@/store';
 
@@ -72,8 +72,9 @@ const AddWidget = (props: {
                             componentName: componentItem.moduleName,
                             path: path,
                             libraryName: dependencyItem.libraryGlobalImport!,
-                            defaultProps: [...(componentItem.defaultProps || []) as JSONProps[]]
+                            defaultProps: ref((componentItem.defaultProps || []) as JSONProps[])
                           };
+                          console.log(schemaMapState.schemaMap[id],'schemaMapState.schemaMap[id]')
                           setOpen(false);
                         }
                         }
