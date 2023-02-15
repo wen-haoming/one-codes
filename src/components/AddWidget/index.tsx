@@ -74,7 +74,6 @@ const AddWidget = (props: {
                             libraryName: dependencyItem.libraryGlobalImport!,
                             defaultProps: JSON.parse(JSON.stringify(((componentItem.defaultProps || []) as JSONProps[])))
                           };
-                          console.log(schemaMapState.schemaMap[id],componentItem,'schemaMapState.schemaMap[id]')
                           setOpen(false);
                         }
                         }

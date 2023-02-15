@@ -2,3 +2,4 @@
 declare module 'prettier/standalone';
 declare module 'prettier/parser-babel';
 declare module  'lodash.get'
+declare module '@babel/standalone'

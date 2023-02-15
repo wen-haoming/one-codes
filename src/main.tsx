@@ -47,11 +47,18 @@ if (container) {
         libraryUrl: 'https://unpkg.com/@douyinfe/semi-ui@2.27.0/dist/umd/semi-ui.min.js',
         libraryVersion: '2.27.0',
         linkUrl: ['https://unpkg.com/@douyinfe/semi-ui@2.27.0/dist/css/semi.css'],
-        moduleConfig: [{
-          moduleName: 'Input',
-          isSlot: false,
-          defaultProps: []
-        }]
+        moduleConfig: [
+          {
+            moduleName: 'Input',
+            isSlot: false,
+            defaultProps: []
+          },
+          {
+            moduleName: 'Button',
+            isSlot: false,
+            defaultProps:  [{ 'propsName': 'children', propsValue: 'button' }]
+          },
+        ]
       },
       {
         libraryName: 'pro-components',
@@ -61,7 +68,7 @@ if (container) {
         moduleConfig: [{
           moduleName: 'ProCard',
           isSlot: false,
-          defaultProps: [{propsName:'title',propsValue:'默认尺寸'},{propsName:'tooltip',propsValue:'这是提示'}]
+          defaultProps: [{ propsName: 'title', propsValue: '默认尺寸' }, { propsName: 'tooltip', propsValue: '这是提示' }]
         }]
       }
       ]} />)
