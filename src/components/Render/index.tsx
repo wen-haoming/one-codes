@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { ref, useSnapshot } from "valtio";
 import srcDocText from './srcdoc.html?raw';
 import * as babel from '@babel/standalone'
-
+import initSwc, { transformSync } from '@swc/wasm-web';
 
 const sandboxAttr = [
   'allow-forms',
@@ -25,19 +25,23 @@ function Render() {
   const schemaMapSnap = useSnapshot(schemaMapState).schemaMap
   const [frameLoading, setFrameLoading] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null)
+  const [swcisInit, setswcInit] = useState(false);
 
   useEffect(() => {
+
     if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document && iframeRef.current?.contentWindow?.document) {
       iframeDocRef.current = iframeRef.current?.contentWindow?.document;
       iframeRef.current.style.width = wrapper.current?.clientWidth + 'px'
       iframeRef.current.style.height = wrapper.current?.clientHeight + 'px'
     }
+    initSwc().then(res => {
+      setswcInit(true)
+    })
   }, [])
 
   useEffect(() => {
-    if (depsMapSnap.length === 0 && frameLoading) {
-      return
-    }
+    if (!swcisInit) return
+    if ((depsMapSnap.length === 0 && frameLoading)) return
 
     const reactRender = idSchemaSnap.map((idSchemaItem) => {
       const id = idSchemaItem.id;
@@ -66,17 +70,34 @@ function Render() {
             </>
         }
        window.ReactDOM.render(<App />, document.getElementById('root'));
-  ` 
+  `
     const scriptTag = document.createElement('script');
     scriptTag.id = 'render-jsx'
 
-    if (scriptTag&&iframeRef.current?.contentDocument?.body?.appendChild) {
-      console.log(babel)
-      scriptTag.innerHTML = babel.transform(componentJsx,{presets: ["react"]}).code;
+    if (scriptTag && iframeRef.current?.contentDocument?.body?.appendChild) {
+      scriptTag.innerHTML = transformSync(componentJsx, {
+        "jsc": {
+          "parser": {
+            "syntax": "typescript",
+            "tsx": true
+          },
+          "target": "es5",
+          "loose": true,
+          "minify": {
+            "compress": false,
+            "mangle": false
+          }
+        },
+        "module": {
+          "type": "commonjs"
+        },
+        "minify": false,
+        "isModule": true
+      }).code;
       iframeRef.current?.contentDocument?.body?.querySelector('#render-jsx')?.remove();
       iframeRef.current?.contentDocument?.body?.appendChild(scriptTag)
     }
-  }, [idSchemaSnap, schemaMapSnap, frameLoading])
+  }, [idSchemaSnap, schemaMapSnap, frameLoading, swcisInit])
 
   useEffect(() => {
     if (depsMapSnap.length === 0) {
