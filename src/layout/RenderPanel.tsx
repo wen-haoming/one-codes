@@ -3,7 +3,7 @@ import { currentState} from '@/store';
 import { FileTextOutlined, FormOutlined, PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Space, Tooltip } from 'antd';
 import { useSnapshot } from 'valtio';
-import Render from '@/components/Render';
+import Simulator from '@/components/Simulator';
 import AddWidget from '@/components/AddWidget';
 
 const RenderPanel = () => {
@@ -46,7 +46,7 @@ const RenderPanel = () => {
         </div>
       </Space>
       <div className="h-[calc(100vh-5rem)] bg-white overflow-y-auto m-2 p-1 flex-col">
-        {currentStateSnap.panelMode === 'edit' && <Render />}
+        {currentStateSnap.panelMode === 'edit' && <Simulator />}
         {currentStateSnap.panelMode === 'code' && <Code />}
       </div>
     </div>

@@ -3,8 +3,8 @@ import { Spin } from "antd";
 import { useEffect, useRef, useState } from "react"
 import { useSnapshot } from "valtio";
 import srcDocText from './srcdoc.html?raw';
-
 import schemaTransform from "./schemaTransform";
+import { LoadingOutlined } from '@ant-design/icons';
 
 const sandboxAttr = [
   'allow-forms',
@@ -39,6 +39,7 @@ function Render() {
       return
     }
 
+
     const scriptText = depsMapSnap.map((dependency, idx) => {
       return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
     }).join(`\r`)
@@ -60,7 +61,7 @@ function Render() {
     schemaTransform(JSON.parse(JSON.stringify({
       schemaMapStateSnap: schemaMapSnap,
       idSchemaStateSnap: idSchemaSnap
-    }))).then(({ umdCode ,esCode}) => {
+    }))).then(({ umdCode, esCode }) => {
       const scriptTag = document.createElement('script');
       scriptTag.id = 'render-jsx'
       if (scriptTag && iframeRef.current?.contentDocument?.body?.appendChild) {
@@ -72,13 +73,16 @@ function Render() {
     })
   }, [idSchemaSnap, schemaMapSnap, frameLoading])
 
-  
 
   return <div className="border-none w-100% h-100% relative flex" ref={wrapper}>
-    <Spin spinning={frameLoading}>
-      <iframe onLoad={() => {
-        setFrameLoading(false)
-      }} srcDoc={srcdocState} sandbox={sandboxAttr} ref={iframeRef} className="border-none ">
+    <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}  spinning={frameLoading}  tip={depsMapSnap.map(deps => deps.libraryName).join('、') + " 加载中 ..."}>
+      <iframe
+        onError={() => {
+          setFrameLoading(false)
+        }}
+        onLoad={() => {
+          setFrameLoading(false)
+        }} srcDoc={srcdocState} sandbox={sandboxAttr} ref={iframeRef} className="border-none ">
       </iframe>
     </Spin>
   </div>

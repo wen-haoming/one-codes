@@ -36,7 +36,8 @@ function OneCodes(props: {
   }, [])
 
   return (
-    <ConfigProvider locale={zhCN} theme={{
+    <ConfigProvider locale={zhCN}
+    theme={{
       token: { colorPrimary: defaultData.colorPrimary, borderRadius: defaultData.borderRadius },
       components: {
         Segmented: {
