@@ -81,7 +81,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     ${jsx}
     </> 
   }
-  ReactDOM.render(<App />, document.getElementById('root'));
+  ReactDOM?.render(<App />, document.getElementById('root'));
   `
   }
   // 编译jsx

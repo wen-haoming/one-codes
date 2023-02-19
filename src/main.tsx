@@ -38,8 +38,23 @@ if (container) {
         moduleConfig: [{
           moduleName: 'Button',
           isSlot: false,
-          defaultProps: [{ 'propsName': 'children', propsValue: 'button' }]
-        }]
+          defaultProps: [{ 'propsName': 'children', propsValue: 'button' },{'propsName':'type',propsValue:'primary'}]
+        },
+        {
+          moduleName: 'Input',
+          isSlot: false,
+          defaultProps: []
+        },
+        {
+          moduleName: 'Divider',
+          isSlot: false,
+          defaultProps: []
+        },
+        {
+          moduleName: 'Select',
+          isSlot: false,
+        }
+      ]
       },
       {
         libraryName: 'pro-components',

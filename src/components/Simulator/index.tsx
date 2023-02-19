@@ -38,10 +38,6 @@ function Simulator() {
 
 
   useEffect(() => {
-    if (depsMapSnap.length === 0) {
-      return
-    }
-
     const scriptText = depsMapSnap.map((dependency, idx) => {
       return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
     }).join(`\r`)
@@ -59,7 +55,6 @@ function Simulator() {
 
   useEffect(() => {
     if (frameLoading) return
-
     schemaTransform(JSON.parse(JSON.stringify({
       schemaMapStateSnap: schemaMapSnap,
       idSchemaStateSnap: idSchemaSnap
