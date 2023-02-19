@@ -5,6 +5,7 @@ import { useSnapshot } from "valtio";
 import srcDocText from './srcdoc.html?raw';
 import schemaTransform from "./schemaTransform";
 import { LoadingOutlined } from '@ant-design/icons';
+import SelectComponent from './SelectComponent'
 
 const sandboxAttr = [
   'allow-forms',
@@ -16,7 +17,7 @@ const sandboxAttr = [
   'allow-top-navigation-by-user-activation'
 ].join(' ')
 
-function Render() {
+function Simulator() {
   const depsMapSnap = useSnapshot(dependencyConfigState).dependencyConfigState
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const iframeDocRef = useRef<Document | null>(null);
@@ -29,16 +30,17 @@ function Render() {
   useEffect(() => {
     if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document && iframeRef.current?.contentWindow?.document) {
       iframeDocRef.current = iframeRef.current?.contentWindow?.document;
-      iframeRef.current.style.width = wrapper.current?.clientWidth + 'px'
-      iframeRef.current.style.height = wrapper.current?.clientHeight + 'px'
+      iframeRef.current.style.width = wrapper.current?.clientWidth + 'px';
+      iframeRef.current.style.height = wrapper.current?.clientHeight + 'px';
     }
   }, [])
+
+
 
   useEffect(() => {
     if (depsMapSnap.length === 0) {
       return
     }
-
 
     const scriptText = depsMapSnap.map((dependency, idx) => {
       return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
@@ -75,17 +77,24 @@ function Render() {
 
 
   return <div className="border-none w-100% h-100% relative flex" ref={wrapper}>
-    <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}  spinning={frameLoading}  tip={depsMapSnap.map(deps => deps.libraryName).join('、') + " 加载中 ..."}>
+    <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} spinning={frameLoading} tip={depsMapSnap.map(deps => deps.libraryName).join('、') + " 加载中 ..."}>
       <iframe
+        id="sanbox-simulator"
+        className="border-none  relative"
+        srcDoc={srcdocState}
+        sandbox={sandboxAttr}
+        ref={iframeRef}
         onError={() => {
           setFrameLoading(false)
         }}
         onLoad={() => {
           setFrameLoading(false)
-        }} srcDoc={srcdocState} sandbox={sandboxAttr} ref={iframeRef} className="border-none ">
+        }}
+      >
       </iframe>
     </Spin>
+    {!frameLoading && <SelectComponent />}
   </div>
 }
 
-export default Render
+export default Simulator
