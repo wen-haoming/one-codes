@@ -8,7 +8,6 @@ export type UiItem = {
   path: string; // 路径
   libraryName: string; // umd 包全局的名称
   libraryGlobalImport:string;
-  importName: string; // es module引入的名称
   isSlot?: boolean; //是否支持组件嵌套
   defaultProps?: JSONProps[]
 };
