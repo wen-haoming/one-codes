@@ -9,6 +9,7 @@ import viteCompression from 'vite-plugin-compression'
 export default defineConfig({
   base: '/one-codes/',
   build: {
+    sourcemap:true,
     // lib: {
     //   entry: resolve(__dirname, './src/App.tsx'),
     //   name: 'oneCodes'

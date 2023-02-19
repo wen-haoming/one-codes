@@ -58,7 +58,7 @@ function Simulator() {
   }, [depsMapSnap])
 
   useEffect(() => {
-    if ((depsMapSnap.length === 0) || idSchemaSnap.length === 0 || frameLoading) return
+    if (frameLoading) return
 
     schemaTransform(JSON.parse(JSON.stringify({
       schemaMapStateSnap: schemaMapSnap,
@@ -74,7 +74,6 @@ function Simulator() {
       }
     })
   }, [idSchemaSnap, schemaMapSnap, frameLoading])
-
 
   return <div className="border-none w-100% h-100% relative flex" ref={wrapper}>
     <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} spinning={frameLoading} tip={depsMapSnap.map(deps => deps.libraryName).join('、') + " 加载中 ..."}>

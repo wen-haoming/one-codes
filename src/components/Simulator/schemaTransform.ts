@@ -13,7 +13,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     libraryGlobalImport: Record<string, Set<string>>;
   } = { libraryName: {}, libraryGlobalImport: {} };
   const importGlobalMaps:Record<string,string> = {}
-  
+
   function slotRender(idIdSchema: IdSchema): any {
     return idIdSchema.map(schema => {
       const { componentName, props, libraryGlobalImport, libraryName, isSlot, defaultProps } = schemaMapStateSnap[schema.id];
@@ -64,7 +64,6 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
   }
 
   const jsx = slotRender(idSchemaStateSnap)
-
 
   // 组件文件
   const getMainjsType = (type: 'libraryName' | 'libraryGlobalImport') => {
