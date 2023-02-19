@@ -35,7 +35,27 @@ function Render() {
   }, [])
 
   useEffect(() => {
-    if ((depsMapSnap.length === 0 && frameLoading) || idSchemaSnap.length === 0) return
+    if (depsMapSnap.length === 0) {
+      return
+    }
+
+    const scriptText = depsMapSnap.map((dependency, idx) => {
+      return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
+    }).join(`\r`)
+
+    const linkText = depsMapSnap.map((dependency, idx) => {
+      return dependency.linkUrl?.map(href => ` <link rel="stylesheet" href="${href}"></link>`).join('\n')
+    }).join('\n')
+
+    const str = srcdocState
+      .replace('<!-- scripts -->', scriptText)
+      .replace(`<!-- links -->`, linkText)
+    setFrameLoading(true)
+    setSrcdocState(str)
+  }, [depsMapSnap])
+
+  useEffect(() => {
+    if ((depsMapSnap.length === 0) || idSchemaSnap.length === 0 || frameLoading) return
 
     schemaTransform(JSON.parse(JSON.stringify({
       schemaMapStateSnap: schemaMapSnap,
@@ -52,26 +72,7 @@ function Render() {
     })
   }, [idSchemaSnap, schemaMapSnap, frameLoading])
 
-  useEffect(() => {
-    if (depsMapSnap.length === 0) {
-      return
-    }
-
-    const scriptText = depsMapSnap.map((dependency, idx) => {
-      return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
-    }).join(`\r`)
-
-    const linkText = depsMapSnap.map((dependency, idx) => {
-      return dependency.linkUrl?.map(href => ` <link rel="stylesheet" href="${href}"></link>`).join('\n')
-    }).join('\n')
-
-
-    const str = srcdocState
-      .replace('<!-- scripts -->', scriptText)
-      .replace(`<!-- links -->`, linkText)
-    setFrameLoading(true)
-    setSrcdocState(str)
-  }, [])
+  
 
   return <div className="border-none w-100% h-100% relative flex" ref={wrapper}>
     <Spin spinning={frameLoading}>

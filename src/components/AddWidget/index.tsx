@@ -71,7 +71,8 @@ const AddWidget = (props: {
                             isSlot: isSlot,
                             componentName: componentItem.moduleName,
                             path: path,
-                            libraryName: dependencyItem.libraryGlobalImport!,
+                            libraryName: dependencyItem.libraryName!,
+                            libraryGlobalImport: dependencyItem.libraryGlobalImport!,
                             defaultProps: JSON.parse(JSON.stringify(((componentItem.defaultProps || []) as JSONProps[])))
                           };
                           setOpen(false);

@@ -6,14 +6,16 @@ export type UiItem = {
   componentName: string; // 组件名称
   configProps?: any[]; // 右侧面板配置项
   path: string; // 路径
-  libraryName: string;
+  libraryName: string; // umd 包全局的名称
+  libraryGlobalImport:string;
+  importName: string; // es module引入的名称
   isSlot?: boolean; //是否支持组件嵌套
   defaultProps?: JSONProps[]
 };
 
 export type SchemaMap = Record<string, UiItem>;
 
-export const schemaMapState: { schemaMap: SchemaMap } = proxy((JSON.parse(localStorage.getItem('schemaMap') as any))||{ schemaMap: {} });
+export const schemaMapState: { schemaMap: SchemaMap } = proxy((JSON.parse(localStorage.getItem('schemaMap') as any)) || { schemaMap: {} });
 
 subscribe(schemaMapState, () => {
   localStorage.setItem('schemaMap', JSON.stringify(schemaMapState))

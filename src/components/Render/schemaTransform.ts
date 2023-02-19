@@ -6,13 +6,19 @@ import { transform } from '@babel/standalone'
  *  
  * @param schema  
  */
-function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSchemaStateSnap: IdSchema, schemaMapStateSnap: SchemaMap }): Promise<{ esCode: string, umdCode: string }> {
+async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSchemaStateSnap: IdSchema, schemaMapStateSnap: SchemaMap }): Promise<{ esCode: string, umdCode: string }> {
 
-  const improtMaps: Record<string, Set<string>> = {};
+  const improtMaps: {
+    libraryName: Record<string, Set<string>>;
+    libraryGlobalImport: Record<string, Set<string>>;
+  } = { libraryName: {}, libraryGlobalImport: {} };
+  const importGlobalMaps:Record<string,string> = {
 
+  }
   function slotRender(idIdSchema: IdSchema): any {
     return idIdSchema.map(schema => {
-      const { componentName, props, libraryName, isSlot, defaultProps } = schemaMapStateSnap[schema.id];
+      const { componentName, props, libraryGlobalImport, libraryName, isSlot, defaultProps } = schemaMapStateSnap[schema.id];
+      importGlobalMaps[ libraryName] =  libraryGlobalImport
 
       const defaultPropsObj = defaultProps?.reduce<Record<string, any>>((pre, { propsName, propsValue }) => {
         pre[propsName as string] = propsValue
@@ -26,11 +32,12 @@ function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSchemaSt
       };
 
       let childrenStr: string = '';
-
-      if (improtMaps[libraryName]) {
-        improtMaps[libraryName].add(componentName)
+      if (improtMaps.libraryGlobalImport[libraryGlobalImport]) {
+        improtMaps.libraryGlobalImport[libraryGlobalImport].add(componentName)
+        improtMaps.libraryName[libraryName].add(componentName)
       } else {
-        improtMaps[libraryName] = new Set([componentName])
+        improtMaps.libraryGlobalImport[libraryGlobalImport] = new Set([componentName])
+        improtMaps.libraryName[libraryName] = new Set([componentName])
       }
 
       const hasProps = Object.keys(newProps).length > 0
@@ -58,13 +65,16 @@ function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSchemaSt
   }
 
   const jsx = slotRender(idSchemaStateSnap)
-  const imports = Object.keys(improtMaps).map((libraryName) => {
-    const componentNames = improtMaps[libraryName];
-    return `import {${[...componentNames].join(',')}} from '${libraryName}'`
-  }).join('\n')
+
 
   // 组件文件
-  const mainjs = `import React from 'react';
+  const getMainjsType = (type: 'libraryName' | 'libraryGlobalImport') => {
+    const imports = Object.keys(improtMaps[type]).map((libraryName) => {
+      const componentNames = improtMaps[type][libraryName];
+      return `import {${[...componentNames].join(',')}} from '${libraryName}'`
+    }).join('\n')
+
+    return `import React from 'react';
   import ReactDOM from 'react-dom';
   ${imports}
 
@@ -74,51 +84,46 @@ function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSchemaSt
     </> 
   }
   ReactDOM.render(<App />, document.getElementById('root'));
-  ` 
+  `
+  }
   // 编译jsx
-  const transformEsModule = transform(mainjs, {  presets: ['es2016', 'react'], });
-  console.log(transformEsModule, 'transformEsModule')
+  const transformEsModule = transform(getMainjsType("libraryGlobalImport"), { presets: ['es2016', 'react'], });
+
   const modules: any = {
     'main.js': transformEsModule,
   };
-
   // 编译 umd
-  return rollup({
+  const umdCode = await rollup({
     input: 'main.js',
+    output:{
+      strict:false
+    },
     plugins: [
       {
         name: 'loader',
-        resolveId(source) {
+        resolveId(source, importer) {
           if (modules.hasOwnProperty(source)) {
-            return source;
+            return source || '';
           } else {
-            return ''
+            return false
           }
         },
         load(id) {
           if (modules.hasOwnProperty(id)) {
-            return modules[id];
+            return modules[id] || '';
           } else {
-            return ''
+            return false
           }
         },
       }
     ]
   })
-    .then(async (bundle) => {
-      const umdCodeBundle = (await bundle.generate({ format: 'umd' })).output
-      return {
-        umdCodeBundle: umdCodeBundle,
-      }
-    })
-    .then(({ umdCodeBundle }) => {
-      const umdCode = umdCodeBundle[0].code;
-      return {
-        esCode: mainjs,
-        umdCode
-      }
-    });
+    .then((bundle) => bundle.generate({ format: 'umd' })).then(res => res.output[0].code)
 
+  return {
+    esCode: getMainjsType('libraryName'),
+    umdCode
+  }
 }
 
 
