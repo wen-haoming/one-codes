@@ -42,25 +42,6 @@ if (container) {
         }]
       },
       {
-        libraryName: 'semi-ui',
-        libraryGlobalImport: 'SemiUI',
-        libraryUrl: 'https://unpkg.com/@douyinfe/semi-ui@2.27.0/dist/umd/semi-ui.min.js',
-        libraryVersion: '2.27.0',
-        linkUrl: ['https://unpkg.com/@douyinfe/semi-ui@2.27.0/dist/css/semi.css'],
-        moduleConfig: [
-          {
-            moduleName: 'Input',
-            isSlot: false,
-            defaultProps: []
-          },
-          {
-            moduleName: 'Button',
-            isSlot: false,
-            defaultProps:  [{ 'propsName': 'children', propsValue: 'button' }]
-          },
-        ]
-      },
-      {
         libraryName: 'pro-components',
         libraryGlobalImport: 'ProComponents',
         libraryUrl: 'https://unpkg.com/@ant-design/pro-components@2.3.52/dist/components.min.js',

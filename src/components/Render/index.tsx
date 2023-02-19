@@ -1,10 +1,10 @@
-import { dependencyConfigState, idSchemaState, schemaMapState } from "@/store";
+import { currentState, dependencyConfigState, idSchemaState, schemaMapState } from "@/store";
 import { Spin } from "antd";
 import { useEffect, useRef, useState } from "react"
-import { ref, useSnapshot } from "valtio";
+import { useSnapshot } from "valtio";
 import srcDocText from './srcdoc.html?raw';
-import * as babel from '@babel/standalone'
-import initSwc, { transformSync } from '@swc/wasm-web';
+
+import schemaTransform from "./schemaTransform";
 
 const sandboxAttr = [
   'allow-forms',
@@ -25,79 +25,32 @@ function Render() {
   const schemaMapSnap = useSnapshot(schemaMapState).schemaMap
   const [frameLoading, setFrameLoading] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null)
-  const [swcisInit, setswcInit] = useState(false);
 
   useEffect(() => {
-
     if (!iframeDocRef.current && iframeRef.current?.contentWindow?.document && iframeRef.current?.contentWindow?.document) {
       iframeDocRef.current = iframeRef.current?.contentWindow?.document;
       iframeRef.current.style.width = wrapper.current?.clientWidth + 'px'
       iframeRef.current.style.height = wrapper.current?.clientHeight + 'px'
     }
-    initSwc().then(res => {
-      setswcInit(true)
-    })
   }, [])
 
   useEffect(() => {
-    if (!swcisInit) return
-    if ((depsMapSnap.length === 0 && frameLoading)) return
+    if ((depsMapSnap.length === 0 && frameLoading) || idSchemaSnap.length === 0) return
 
-    const reactRender = idSchemaSnap.map((idSchemaItem) => {
-      const id = idSchemaItem.id;
-      const componentName = schemaMapSnap[id].componentName
-      const componentIsSlot = schemaMapSnap[id].isSlot
-      const componentLibraryName = schemaMapSnap[id].libraryName
-
-      const defaultProps = ((schemaMapSnap[id].defaultProps || [])).reduce<Record<string, any>>((pre, cur) => {
-        if (cur && cur.propsName) {
-          pre[cur.propsName] = cur.propsValue
-        }
-        return pre
-      }, ref({}));
-
-      if (componentIsSlot) {
-        return `<window.${componentLibraryName}.${componentName} {...${JSON.stringify(defaultProps)}}></window.${componentLibraryName}.${componentName}>`
+    schemaTransform(JSON.parse(JSON.stringify({
+      schemaMapStateSnap: schemaMapSnap,
+      idSchemaStateSnap: idSchemaSnap
+    }))).then(({ umdCode ,esCode}) => {
+      const scriptTag = document.createElement('script');
+      scriptTag.id = 'render-jsx'
+      if (scriptTag && iframeRef.current?.contentDocument?.body?.appendChild) {
+        scriptTag.innerHTML = umdCode;
+        currentState.code = esCode
+        iframeRef.current?.contentDocument?.body?.querySelector('#render-jsx')?.remove();
+        iframeRef.current?.contentDocument?.body?.appendChild(scriptTag)
       }
-
-      return `<window.${componentLibraryName}.${componentName} {...${JSON.stringify(defaultProps)}} />`
-    }).join('')
-
-    const componentJsx = `
-          var App =  () => {
-            return  <>
-            ${reactRender}
-            </>
-        }
-       window.ReactDOM.render(<App />, document.getElementById('root'));
-  `
-    const scriptTag = document.createElement('script');
-    scriptTag.id = 'render-jsx'
-
-    if (scriptTag && iframeRef.current?.contentDocument?.body?.appendChild) {
-      scriptTag.innerHTML = transformSync(componentJsx, {
-        "jsc": {
-          "parser": {
-            "syntax": "typescript",
-            "tsx": true
-          },
-          "target": "es5",
-          "loose": true,
-          "minify": {
-            "compress": false,
-            "mangle": false
-          }
-        },
-        "module": {
-          "type": "commonjs"
-        },
-        "minify": false,
-        "isModule": true
-      }).code;
-      iframeRef.current?.contentDocument?.body?.querySelector('#render-jsx')?.remove();
-      iframeRef.current?.contentDocument?.body?.appendChild(scriptTag)
-    }
-  }, [idSchemaSnap, schemaMapSnap, frameLoading, swcisInit])
+    })
+  }, [idSchemaSnap, schemaMapSnap, frameLoading])
 
   useEffect(() => {
     if (depsMapSnap.length === 0) {
@@ -107,18 +60,11 @@ function Render() {
     const scriptText = depsMapSnap.map((dependency, idx) => {
       return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`
     }).join(`\r`)
+
     const linkText = depsMapSnap.map((dependency, idx) => {
       return dependency.linkUrl?.map(href => ` <link rel="stylesheet" href="${href}"></link>`).join('\n')
     }).join('\n')
 
-    const getDependModuleMap = Object.values(schemaMapSnap).reduce<Record<string, string[]>>((pre, value) => {
-      if (pre[value.libraryName]) {
-        pre[value.libraryName] = [...new Set([...pre[value.libraryName], value.componentName])]
-      } else {
-        pre[value.libraryName] = [value.componentName]
-      }
-      return pre
-    }, {})
 
     const str = srcdocState
       .replace('<!-- scripts -->', scriptText)

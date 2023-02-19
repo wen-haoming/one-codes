@@ -2,17 +2,26 @@ import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path';
 import Unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
+import { visualizer } from "rollup-plugin-visualizer";
+import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/one-codes/',
-  optimizeDeps:{
-    exclude:['@swc/wasm-web']
-  },
   build: {
-    sourcemap: true,
+    // lib: {
+    //   entry: resolve(__dirname, './src/App.tsx'),
+    //   name: 'oneCodes'
+    // },
     rollupOptions: {
-      output: {}
+      output: {
+        manualChunks: {
+          "babel": ['@babel/standalone'],
+          "rollup": ['@rollup/browser'],
+          "prettier": ['prettier'],
+          "codemirror": ["@uiw/react-codemirror", "@uiw/codemirror-theme-vscode", "@codemirror/lang-javascript"]
+        }
+      }
     },
     commonjsOptions: {
       transformMixedEsModules: true
@@ -31,6 +40,8 @@ export default defineConfig({
     ],
   },
   plugins: [
+    viteCompression(),
+    visualizer(),
     Unocss({
       shortcuts: {
         btn: 'inline-flex py-.5 px-2 font-semibold rounded bg-brand-primary text-white cursor-pointer hover:bg-brand-hover justify-center items-center',
