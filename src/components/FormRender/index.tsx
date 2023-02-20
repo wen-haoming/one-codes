@@ -38,7 +38,9 @@ function FormRender(props: {
     form.setFieldsValue(JSON.parse(JSON.stringify(defaultProps)));
   }, [formPropsConfig, defaultProps])
 
-  return <Form form={form} layout="vertical" size="small" onValuesChange={onValuesChange}>
+  return <Form form={form} layout="vertical" size="small" onValuesChange={(r,values)=>{
+    onValuesChange && onValuesChange(values)
+  }}>
     {
       Object.entries(formPropsConfig).map(([name, item]) => {
         return <Item

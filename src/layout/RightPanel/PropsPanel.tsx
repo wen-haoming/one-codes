@@ -6,10 +6,10 @@ import { useSnapshot } from 'valtio';
 function PropsPanel() {
   const id = useSnapshot(currentState).id;
   const schemaMapSnap = useSnapshot(schemaMapState).schemaMap;
-  const { formPropsConfig = {}, defaultProps = {} } = schemaMapSnap[id!] || {}
+  const { formPropsConfig = {}, defaultProps = {} ,props} = schemaMapSnap[id!] || {}
 
   const formPropsConfigMemo = useMemo(() => JSON.parse(JSON.stringify(formPropsConfig)), [formPropsConfig])
-  const defaultPropsMemo = useMemo(() => defaultProps, [defaultProps])
+  const defaultPropsMemo = useMemo(() => ({...defaultProps,...props}), [defaultProps,props])
 
   if (!id) {
     return <div className='text-coolgray'>请选择组件~</div>
