@@ -31,7 +31,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
       };
 
       let childrenStr: string = '';
-      if (improtMaps.libraryGlobalImport[libraryGlobalImport]) {
+      if (improtMaps.libraryGlobalImport[libraryGlobalImport] && improtMaps.libraryName[libraryName]) {
         improtMaps.libraryGlobalImport[libraryGlobalImport].add(componentName)
         improtMaps.libraryName[libraryName].add(componentName)
       } else {
