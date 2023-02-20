@@ -15,7 +15,7 @@ export default defineConfig({
     //   name: 'oneCodes',
     // },
     rollupOptions: {
-      external:['react','react-dom'],
+      // external:['react','react-dom'],
       output: {
         manualChunks: {
           "babel": ['@babel/standalone'],
