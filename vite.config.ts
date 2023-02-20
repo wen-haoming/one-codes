@@ -12,9 +12,10 @@ export default defineConfig({
     sourcemap:true,
     // lib: {
     //   entry: resolve(__dirname, './src/App.tsx'),
-    //   name: 'oneCodes'
+    //   name: 'oneCodes',
     // },
     rollupOptions: {
+      external:['react','react-dom'],
       output: {
         manualChunks: {
           "babel": ['@babel/standalone'],
@@ -25,6 +26,7 @@ export default defineConfig({
       }
     },
     commonjsOptions: {
+      
       transformMixedEsModules: true
     }
   },

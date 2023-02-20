@@ -16,22 +16,17 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
 
   function slotRender(idIdSchema: IdSchema): any {
     return idIdSchema.map(schema => {
-      const { componentName, props, libraryGlobalImport, libraryName, isSlot, defaultProps } = schemaMapStateSnap[schema.id];
+      const { componentName, libraryGlobalImport, libraryName, isSlot, defaultProps,props } = schemaMapStateSnap[schema.id];
       importGlobalMaps[ libraryName] =  libraryGlobalImport
 
-      const defaultPropsObj = defaultProps?.reduce<Record<string, any>>((pre, { propsName, propsValue }) => {
-        pre[propsName as string] = propsValue
-        return pre
-      }, {})
-
       const newProps: any = {
-        ...defaultPropsObj,
+        ...defaultProps,
         ...props,
         componentid: schema.id
       };
 
       let childrenStr: string = '';
-      if (improtMaps.libraryGlobalImport[libraryGlobalImport]) {
+      if (improtMaps.libraryGlobalImport[libraryGlobalImport] && improtMaps.libraryName[libraryName]) {
         improtMaps.libraryGlobalImport[libraryGlobalImport].add(componentName)
         improtMaps.libraryName[libraryName].add(componentName)
       } else {

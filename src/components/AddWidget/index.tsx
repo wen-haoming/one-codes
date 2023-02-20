@@ -28,14 +28,14 @@ const AddWidget = (props: {
       content={
         <div className="w-350px min-h-200px z-9999999999999 p-15px" >
           {
-           (dependencyConfigSnap).map((dependencyItem, depsList) => {
-              
+            (dependencyConfigSnap).map((dependencyItem, depsList) => {
+
               return (dependencyItem.moduleConfig || []).length > 0 ? <div key={dependencyItem.libraryName}>
                 <span className="m-0 text-gray text-1 text-16px">{dependencyItem.libraryName}</span>
                 <div className="flex flex-row flex-wrap">
                   {
                     dependencyItem.moduleConfig!.map((componentItem, idx2) => {
-                      const { isSlot, moduleName } = componentItem
+                      const { isSlot, formPropsConfig={}, defaultProps, moduleName, } = componentItem
                       return <div
                         className="widgetBtn flex-1 text-2 flex items-center"
                         onClick={() => {
@@ -67,13 +67,13 @@ const AddWidget = (props: {
                             path = `[${idSchemaState.idSchema.length - 1}]`
                           }
                           schemaMapState.schemaMap[id] = {
-                            props: {},
+                            formPropsConfig: JSON.parse(JSON.stringify(formPropsConfig)),
                             isSlot: isSlot,
-                            componentName: componentItem.moduleName,
+                            componentName: moduleName,
                             path: path,
                             libraryName: dependencyItem.libraryName!,
                             libraryGlobalImport: dependencyItem.libraryGlobalImport!,
-                            defaultProps: JSON.parse(JSON.stringify(((componentItem.defaultProps || []) as JSONProps[])))
+                            defaultProps: JSON.parse(JSON.stringify(((defaultProps || []) as JSONProps[])))
                           };
                           setOpen(false);
                         }

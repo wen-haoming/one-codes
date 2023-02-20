@@ -71,7 +71,7 @@ function Simulator() {
   }, [idSchemaSnap, schemaMapSnap, frameLoading])
 
   return <div className="border-none w-100% h-100% relative flex" ref={wrapper}>
-    <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} spinning={frameLoading} tip={depsMapSnap.map(deps => deps.libraryName).join('、') + " 加载中 ..."}>
+    <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} spinning={frameLoading} tip={`正在加载资源 `+ depsMapSnap.map(deps => deps.libraryName).join('、') + " 请稍后 ..."}>
       <iframe
         id="sanbox-simulator"
         className="border-none  relative"

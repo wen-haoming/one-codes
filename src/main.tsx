@@ -1,15 +1,7 @@
 import App from './App';
 import { createRoot } from 'react-dom/client';
-import 'uno.css';
-
-// import { TableFormRender } from '@antd-one/components';
-// import Columns from './Columns'
-// import { ProFormText, ProForm, QueryFilter, ProFormDatePicker, ProFormCheckbox, ProFormRadio, ProFormTextArea } from '@ant-design/pro-components'
-// import { Button, Card, Input, Modal } from 'antd'
 
 const container = document.getElementById('root');
-
-const random = () => Math.floor(Math.random() * 100000).toString(16);
 
 if (container) {
   const root = createRoot(container);
@@ -38,23 +30,58 @@ if (container) {
         moduleConfig: [{
           moduleName: 'Button',
           isSlot: false,
-          defaultProps: [{ 'propsName': 'children', propsValue: 'button' },{'propsName':'type',propsValue:'primary'}]
+          formPropsConfig: {
+            type: {
+              type: 'options',
+              title: '按钮类型',
+              componentProps: {
+                options: [
+                  {
+                    label: 'primary',
+                    value: 'primary',
+                  },
+                  {
+                    label: 'ghost',
+                    value: 'ghost',
+                  },
+                  {
+                    label: 'dashed',
+                    value: 'dashed',
+                  },
+                  {
+                    label: 'link',
+                    value: 'link',
+                  },
+                  {
+                    label: 'text',
+                    value: 'text',
+                  },
+                ]
+              }
+            },
+            children: {
+              type: 'string',
+              title: '内容'
+            }
+          },
+          defaultProps: {
+            children: 'button',
+            type: 'primary'
+          }
         },
         {
           moduleName: 'Input',
           isSlot: false,
-          defaultProps: []
         },
         {
           moduleName: 'Divider',
           isSlot: false,
-          defaultProps: []
         },
         {
           moduleName: 'Select',
           isSlot: false,
         }
-      ]
+        ]
       },
       {
         libraryName: 'pro-components',
@@ -64,7 +91,10 @@ if (container) {
         moduleConfig: [{
           moduleName: 'ProCard',
           isSlot: false,
-          defaultProps: [{ propsName: 'title', propsValue: '默认尺寸' }, { propsName: 'tooltip', propsValue: '这是提示' }]
+          defaultProps: {
+            title: '默认尺寸',
+            tooltip: '这是提示'
+          }
         }]
       }
       ]} />)

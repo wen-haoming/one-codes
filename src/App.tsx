@@ -4,11 +4,21 @@ import { useEffect } from 'react';
 import Layout from './layout';
 import { JSONProps } from './layout/LeftPanel/JSONView';
 import { dependencyConfigState } from './store';
+import 'uno.css';
 
 const defaultData = {
   borderRadius: 4,
   colorPrimary: '#2558fb',
 };
+
+
+export type ModulePropsTypeVal = 'string' | 'boolean' | 'number' | 'valueEnum' | 'options'
+
+export type ModuleProps = Record<string, {
+  type:ModulePropsTypeVal 
+  title: string;
+  componentProps?: Record<string, any>
+}>
 
 type DependencyItem = {
   libraryName: string // 显示的模块名称
@@ -19,7 +29,8 @@ type DependencyItem = {
   moduleConfig?: { // 组件类别
     moduleName: string;
     isSlot: boolean;
-    defaultProps?: JSONProps[]
+    formPropsConfig?: ModuleProps
+    defaultProps?: Record<string, any>
   }[]
 }
 
@@ -37,16 +48,16 @@ function OneCodes(props: {
 
   return (
     <ConfigProvider locale={zhCN}
-    theme={{
-      token: { colorPrimary: defaultData.colorPrimary, borderRadius: defaultData.borderRadius },
-      components: {
-        Segmented: {
-          colorText: defaultData.colorPrimary,
-          borderRadius: 0,
-          borderRadiusOuter: 0
+      theme={{
+        token: { colorPrimary: defaultData.colorPrimary, borderRadius: defaultData.borderRadius },
+        components: {
+          Segmented: {
+            colorText: defaultData.colorPrimary,
+            borderRadius: 0,
+            borderRadiusOuter: 0
+          }
         }
-      }
-    }}>
+      }}>
       <Layout />
     </ConfigProvider>
   );

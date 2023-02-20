@@ -1,11 +1,12 @@
 {
   "name": "one-codes",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "type": "module",
-  "main": "dist",
-  "module": "dist",
+  "main": "dist/one-codes.js",
+  "module": "dist/one-codes.js",
   "files": [
-    "dist"
+    "dist",
+    "package.json"
   ],
   "scripts": {
     "dev": "vite dev",

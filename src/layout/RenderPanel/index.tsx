@@ -1,6 +1,6 @@
 import Code from '@/components/Code';
 import { currentState} from '@/store';
-import { FileTextOutlined, FormOutlined, PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { FileTextOutlined, FormOutlined } from '@ant-design/icons';
 import { Button, Space, Tooltip } from 'antd';
 import { useSnapshot } from 'valtio';
 import Simulator from '@/components/Simulator';
