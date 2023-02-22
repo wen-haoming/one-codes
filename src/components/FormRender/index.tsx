@@ -18,7 +18,8 @@ const CustomerRender = (props: {
   } else if (type === 'options') {
     return <Select style={{ width: '100%' }}  {...componentProps}  {...innerProps} />
   } else if (type === 'valueEnum') {
-    return <Select style={{ width: '100%' }} {...componentProps} {...innerProps} options={Object.entries(componentProps?.options || {}).map(([value, label]) => ({ label, value }))} />
+    const { valueEnum, ...valuProps } = componentProps || {}
+    return <Select style={{ width: '100%' }} {...innerProps}  {...valuProps} options={Object.entries(valueEnum ? componentProps?.valueEnum : {}).map(([value, label]) => ({ label, value }))} />
   } else {
     return null
   }
@@ -38,7 +39,8 @@ function FormRender(props: {
     form.setFieldsValue(JSON.parse(JSON.stringify(defaultProps)));
   }, [formPropsConfig, defaultProps])
 
-  return <Form form={form} layout="vertical"  onValuesChange={(r,values)=>{
+  return <Form form={form} layout="vertical" onValuesChange={(r, values) => {
+    console.log(values,'values')
     onValuesChange && onValuesChange(values)
   }}>
     {
@@ -47,7 +49,7 @@ function FormRender(props: {
           label={item.title}
           name={name}
           key={name}
-          valuePropName={item.type === 'boolean'?'checked':'value'}
+          valuePropName={item.type === 'boolean' ? 'checked' : 'value'}
         >
           <CustomerRender type={item.type} componentProps={item.componentProps} />
         </Item>

@@ -11,8 +11,9 @@ const AddWidget = (props: {
   slotId?: string; // 嵌套在哪个组件的id
   children?: ReactElement
 }) => {
-  const { slotId } = props;
+  const { slotId: outsideSlotId } = props;
   const [open, setOpen] = useState(false);
+  const [slotId, setSlotId] = useState('')
   const dependencyConfigSnap = useSnapshot(dependencyConfigState).dependencyConfigState
   if (!props.children) return null
 
@@ -24,9 +25,14 @@ const AddWidget = (props: {
       overlayStyle={{ padding: 0 }}
       arrow={false}
       placement="bottomLeft"
-      trigger={['click', 'hover']}
+      trigger={['click']}
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(vis) => {
+        setOpen(vis);
+        if (vis && outsideSlotId) {
+          setSlotId(outsideSlotId)
+        }
+      }}
       content={
         <div className="w-350px min-h-200px z-9999999999999 p-15px" >
           {

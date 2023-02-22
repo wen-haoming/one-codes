@@ -1,5 +1,4 @@
 import { ModuleProps } from "@/App";
-import { JSONProps } from "@/layout/LeftPanel/JSONView";
 import { proxy, subscribe } from "valtio";
 
 export type UiItem = {

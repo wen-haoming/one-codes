@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAttributeNode } from "@/utils";
 import { useSnapshot } from "valtio";
 import { currentState, IdSchema, idSchemaState, schemaMapState } from "@/store";
 import { Space, Tooltip } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusSquareOutlined } from "@ant-design/icons";
+import AddWidget from "../AddWidget";
 
 function SelectComponent() {
   const schemaMapStateSnap = useSnapshot(schemaMapState).schemaMap;
-  const currentStateSnap = useSnapshot(currentState);
   const [postition, setPosition] = useState({ left: 0, width: 0, height: 0, top: 0 })
   const [selectPostition, setSelectPosition] = useState({ left: 0, width: 0, height: 0, top: 0 })
-  const [actionsState, setActionsState] = useState({ componentName: '', componentid: '' });
+  const [actionsState, setActionsState] = useState<{ componentName: string, componentid: string, isSlot: boolean | undefined }>({ componentName: '', componentid: '', isSlot: undefined });
   const [show, setShow] = useState(false)
 
   const getTargetComponent = (ele: HTMLElement) => {
@@ -23,7 +23,8 @@ function SelectComponent() {
       setPosition({ left: left - 3, top: top - 3, width: width + 2, height: height + 2 });
       setActionsState({
         componentName: schemaMapStateSnap[componentid].componentName,
-        componentid
+        componentid,
+        isSlot: schemaMapStateSnap[componentid].isSlot
       })
       return {
         targetNode,
@@ -38,8 +39,6 @@ function SelectComponent() {
   useEffect(() => {
     if (!document.getElementById('sanbox-simulator')) return
     const simulatorBody = (document.getElementById('sanbox-simulator') as HTMLIFrameElement)?.contentDocument?.body;
-
-
 
     const mousemove = (e: HTMLElementEventMap['mousemove']) => {
       requestAnimationFrame(() => getTargetComponent(e.target as HTMLElement))
@@ -96,7 +95,7 @@ function SelectComponent() {
   }
 
   return <>
-    {show ? <>
+    {<div style={{ display: show ? 'block' : 'none' }}>
       <div className="components-actions absolute border-1px border-brand-primary border-dashed pointer-events-none p-r-2px  "
         style={postition}
       />
@@ -104,11 +103,14 @@ function SelectComponent() {
         <span>
           {actionsState.componentName}
         </span>
+        {actionsState.componentid && actionsState.isSlot && <AddWidget slotId={actionsState.componentid}>
+          <PlusSquareOutlined className="text-12px cursor-pointer" />
+        </AddWidget>}
         <Tooltip title={<span className="text-12px">删除</span>} arrow={false} placement="bottom" >
           <DeleteOutlined className="text-12px cursor-pointer" onClick={deleComponent} />
         </Tooltip>
       </Space>
-    </> : null}
+    </div>}
     {currentState.id && <div className="components-actions absolute border-2px border-brand-primary pointer-events-none " style={selectPostition}></div>}
   </>
 }

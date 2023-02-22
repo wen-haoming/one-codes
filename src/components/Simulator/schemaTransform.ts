@@ -13,19 +13,37 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     libraryGlobalImport: Record<string, Set<string>>;
   } = { libraryName: {}, libraryGlobalImport: {} };
   const importGlobalMaps: Record<string, string> = {}
+  const subModuneMaps: Record<string, Set<string>> = {}
 
   function slotRender(idIdSchema: IdSchema): any {
     return idIdSchema.map(schema => {
-      const { componentName, libraryGlobalImport, libraryName, isSlot, defaultProps, props } = schemaMapStateSnap[schema.id];
-      importGlobalMaps[libraryName] = libraryGlobalImport
-
+      const { libraryGlobalImport, libraryName, isSlot, defaultProps, props } = schemaMapStateSnap[schema.id];
+      let [componentName, subComponentName] = schemaMapStateSnap[schema.id].componentName.split('.')
+      importGlobalMaps[libraryName] = libraryGlobalImport;
       const newProps: any = {
         ...defaultProps,
         ...props,
         componentid: schema.id
       };
 
+      // 处理subModuleName 比如 Form.Item 的情况，但是一般不会大于两层
+      if (subComponentName) {
+        if (subModuneMaps[componentName]) {
+          subModuneMaps[componentName].add(subComponentName)
+        } else {
+          subModuneMaps[componentName] = new Set([subComponentName])
+        }
+      }
+      if (schemaMapStateSnap[schema.id].componentName.split('.').length > 2) {
+        const errorMsg = `暂时不支持两层以上的模块名称引用 --->${componentName}`;
+        console.error(errorMsg);
+        throw new Error(errorMsg)
+      }
+
+
+
       let childrenStr: string = '';
+      // 添加 import 的语句依赖
       if (improtMaps.libraryGlobalImport[libraryGlobalImport] && improtMaps.libraryName[libraryName]) {
         improtMaps.libraryGlobalImport[libraryGlobalImport].add(componentName)
         improtMaps.libraryName[libraryName].add(componentName)
@@ -35,7 +53,6 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
       }
 
       const hasProps = Object.keys(newProps).length > 0
-
       const propsStr = hasProps ? Object.entries(newProps).filter(([key, value]) => {
         if (key === 'children' && typeof value !== 'object') {
           childrenStr = String(value)
@@ -46,27 +63,28 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
       }).map(([key, value]) => {
         if (typeof value === 'object') {
           return `${key}={${JSON.stringify(value)}}`
-        } else if(typeof value === 'string'){
+        } else if (typeof value === 'string') {
           return `${key}="${(value)}"`
-        }else{
+        } else {
           return `${key}={${(value)}}`
         }
       }).join(' ') : ''
       if (isSlot && schema.slot) {
-        return `<${componentName} ${propsStr}>
-           ${childrenStr ? childrenStr : slotRender(schema.slot)}
-        </${componentName}>`
+        return `<${subComponentName || componentName} ${propsStr}>
+           ${childrenStr ? childrenStr : ''}
+           ${slotRender(schema.slot)}
+        </${subComponentName || componentName}>`
       } else {
-        return `<${componentName} ${propsStr}>
+        return `<${subComponentName || componentName} ${propsStr}>
            ${childrenStr ? childrenStr : ''} 
-         </${componentName}>`
+         </${subComponentName || componentName}>`
       }
     }
     ).join('\n')
   }
 
   const jsx = slotRender(idSchemaStateSnap)
-
+  const hasSubModuneMaps = Object.keys(subModuneMaps).length > 0;
   // 组件文件
   const getMainjsType = (type: 'libraryName' | 'libraryGlobalImport') => {
     const imports = Object.keys(improtMaps[type]).map((libraryName) => {
@@ -77,6 +95,10 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     return `import React from 'react';
   import ReactDOM from 'react-dom';
   ${imports}
+
+  ${hasSubModuneMaps ? Object.entries(subModuneMaps).map(([moduleName, subModuleName]) => {
+      return `const { ${[...subModuleName].join(',')} } = ${moduleName}`
+    }) : ''}
 
   const App = () => {
     return <>

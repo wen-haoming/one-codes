@@ -8,7 +8,7 @@ import AddWidget from '@/components/AddWidget';
 
 const RenderPanel = () => {
   const currentStateSnap = useSnapshot(currentState);
-
+  
   return (
     <div className="flex flex-col flex-1 bg-brand-grey p-t-0">
       <Space className="flex h-7 w-full bg-white b-brand-grey border-l-1 border-r-1 justify-between items-center p-x2">

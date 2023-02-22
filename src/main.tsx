@@ -31,6 +31,20 @@ if (container) {
           moduleName: 'Button',
           isSlot: false,
           formPropsConfig: {
+            block:{
+              type:'boolean',
+              title:'是否区块'
+            },
+            htmlType:{
+              type:'valueEnum',
+              title:'表单提交按钮',
+              componentProps:{
+                valueEnum:{
+                  submit:'submit',
+                  'undefined':'undefined'
+                }
+              }
+            },
             type: {
               type: 'options',
               title: '按钮类型',
@@ -84,13 +98,82 @@ if (container) {
         {
           moduleName: 'Select',
           isSlot: false,
-          defaultProps:{
-            options:[
-              {label:'a',value:'a'},
-              {label:'b',value:'b'},
+          defaultProps: {
+            options: [
+              { label: 'a', value: 'a' },
+              { label: 'b', value: 'b' },
             ],
-            style:{
-              width:200
+            style: {
+              width: 200
+            }
+          }
+        },
+        {
+          moduleName: 'Card',
+          isSlot: true,
+          formPropsConfig: {
+            size: {
+              type: 'valueEnum',
+              title: 'card 的尺寸',
+              componentProps: {
+                valueEnum: {
+                  default: 'default',
+                  small: 'small'
+                }
+              }
+            },
+            title: {
+              type: 'string',
+              title: '标题'
+            }
+          },
+          defaultProps: {
+            size: 'small',
+            title: 'card'
+          }
+        },
+        {
+          moduleName: 'Form',
+          isSlot: true,
+          formPropsConfig: {
+            layout: {
+              title: '表单布局',
+              type: "options",
+              componentProps: {
+                options: [
+                  { label: 'horizontal', value: 'horizontal' },
+                  { label: 'vertical', value: 'vertical' },
+                  { label: 'inline', value: 'inline' },
+                ]
+              }
+            }
+          },
+          defaultProps: {
+            style: {
+              minHeight: 300
+            }
+          }
+        },
+        {
+          moduleName: 'Form.Item',
+          isSlot: true,
+          formPropsConfig: {
+            required: {
+              title: '是否必填',
+              type: "boolean"
+            },
+            label: {
+              title: 'label',
+              type: 'string'
+            },
+            name: {
+              title: 'name',
+              type: 'string',
+            }
+          },
+          defaultProps: {
+            style: {
+              minHeight: 50
             }
           }
         }
