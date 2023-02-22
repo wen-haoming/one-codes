@@ -1,7 +1,7 @@
 import { getId } from '@/utils';
 import { CodepenOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
-import { ReactElement, useState } from 'react';
+import { ReactElement, useState, cloneElement } from 'react';
 import get from 'lodash.get'
 import { ref, useSnapshot } from 'valtio';
 import { JSONProps } from '@/layout/LeftPanel/JSONView';
@@ -14,6 +14,8 @@ const AddWidget = (props: {
   const { slotId } = props;
   const [open, setOpen] = useState(false);
   const dependencyConfigSnap = useSnapshot(dependencyConfigState).dependencyConfigState
+  if (!props.children) return null
+
   return (
     <Popover
       overlayClassName="p-0"
@@ -29,19 +31,17 @@ const AddWidget = (props: {
         <div className="w-350px min-h-200px z-9999999999999 p-15px" >
           {
             (dependencyConfigSnap).map((dependencyItem, depsList) => {
-
               return (dependencyItem.moduleConfig || []).length > 0 ? <div key={dependencyItem.libraryName}>
                 <span className="m-0 text-gray text-1 text-16px">{dependencyItem.libraryName}</span>
                 <div className="flex flex-row flex-wrap">
                   {
                     dependencyItem.moduleConfig!.map((componentItem, idx2) => {
-                      const { isSlot, formPropsConfig={}, defaultProps, moduleName, } = componentItem
+                      const { isSlot, formPropsConfig = {}, defaultProps, moduleName, } = componentItem
                       return <div
                         className="widgetBtn flex-1 text-2 flex items-center"
                         onClick={() => {
                           const id = getId();
                           let path = '';
-                          // 
                           if (slotId) {
                             const target = get(idSchemaState.idSchema, schemaMapState.schemaMap[slotId].path);
                             if (target) {
@@ -95,8 +95,9 @@ const AddWidget = (props: {
         </div>
       }
     >
-      <Button size="small" className='text-brand-primary' type="link"
-        icon={<PlusSquareOutlined />} />
+      {
+        cloneElement(props.children)
+      }
     </Popover>
   );
 };

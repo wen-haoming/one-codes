@@ -13,38 +13,39 @@ function SelectComponent() {
   const [actionsState, setActionsState] = useState({ componentName: '', componentid: '' });
   const [show, setShow] = useState(false)
 
+  const getTargetComponent = (ele: HTMLElement) => {
+    const targetNode = getAttributeNode(ele, 'componentid') as HTMLElement
+    const componentid = targetNode && targetNode?.getAttribute && targetNode.getAttribute('componentid')
+    if (targetNode && targetNode.getBoundingClientRect && typeof componentid === 'string') {
+      setShow(true)
+      if (targetNode.querySelector('.components-actions')) return
+      const { left, top, width, height } = targetNode.getBoundingClientRect();
+      setPosition({ left: left - 3, top: top - 3, width: width + 2, height: height + 2 });
+      setActionsState({
+        componentName: schemaMapStateSnap[componentid].componentName,
+        componentid
+      })
+      return {
+        targetNode,
+        left, top, width, height
+      }
+    } else {
+      setShow(false)
+      return {}
+    }
+  }
 
   useEffect(() => {
     if (!document.getElementById('sanbox-simulator')) return
     const simulatorBody = (document.getElementById('sanbox-simulator') as HTMLIFrameElement)?.contentDocument?.body;
 
-    const getTargetComponent = (e: HTMLElementEventMap['click']) => {
-      const targetNode = getAttributeNode(e.target as HTMLElement, 'componentid') as HTMLElement
-      const componentid = targetNode && targetNode?.getAttribute && targetNode.getAttribute('componentid')
-      if (targetNode && targetNode.getBoundingClientRect && typeof componentid === 'string') {
-        setShow(true)
-        if (targetNode.querySelector('.components-actions')) return
-        const { left, top, width, height } = targetNode.getBoundingClientRect();
-        setPosition({ left: left - 3, top: top - 3, width: width + 2, height: height + 2 });
-        setActionsState({
-          componentName: schemaMapStateSnap[componentid].componentName,
-          componentid
-        })
-        return {
-          targetNode,
-          left, top, width, height
-        }
-      } else {
-        setShow(false)
-        return {}
-      }
-    }
+
 
     const mousemove = (e: HTMLElementEventMap['mousemove']) => {
-      requestAnimationFrame(() => getTargetComponent(e))
+      requestAnimationFrame(() => getTargetComponent(e.target as HTMLElement))
     }
     const click = (e: HTMLElementEventMap['click']) => {
-      const { targetNode, left, top, width, height } = getTargetComponent(e) as any;
+      const { targetNode, left, top, width, height } = getTargetComponent(e.target as HTMLElement) as any;
       const componentid = targetNode?.getAttribute('componentid');
       if (targetNode && componentid) {
         currentState.id = componentid;
@@ -54,10 +55,21 @@ function SelectComponent() {
 
     simulatorBody?.addEventListener('mousemove', mousemove);
     simulatorBody?.addEventListener('click', click);
-
     return () => {
       simulatorBody?.removeEventListener('mousemove', mousemove)
       simulatorBody?.removeEventListener('click', click);
+    }
+  }, [schemaMapStateSnap])
+
+
+  useEffect(() => {
+    if (currentState.id) {
+      requestAnimationFrame(() => {
+        const simulatorBody = (document.getElementById('sanbox-simulator') as HTMLIFrameElement)?.contentDocument?.body;
+        const node = simulatorBody?.querySelector(`[componentid='${currentState.id}']`)
+        const { targetNode, left, top, width, height } = getTargetComponent(node as HTMLElement) as any;
+        setSelectPosition({ left: left, top: top, width: targetNode.clientWidth, height: targetNode.clientHeight });
+      })
     }
   }, [schemaMapStateSnap])
 

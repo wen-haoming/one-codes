@@ -62,6 +62,10 @@ if (container) {
             children: {
               type: 'string',
               title: '内容'
+            },
+            danger: {
+              type: "boolean",
+              title: '设置危险按钮'
             }
           },
           defaultProps: {
@@ -80,6 +84,15 @@ if (container) {
         {
           moduleName: 'Select',
           isSlot: false,
+          defaultProps:{
+            options:[
+              {label:'a',value:'a'},
+              {label:'b',value:'b'},
+            ],
+            style:{
+              width:200
+            }
+          }
         }
         ]
       },

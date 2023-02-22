@@ -38,7 +38,7 @@ function FormRender(props: {
     form.setFieldsValue(JSON.parse(JSON.stringify(defaultProps)));
   }, [formPropsConfig, defaultProps])
 
-  return <Form form={form} layout="vertical" size="small" onValuesChange={(r,values)=>{
+  return <Form form={form} layout="vertical"  onValuesChange={(r,values)=>{
     onValuesChange && onValuesChange(values)
   }}>
     {
@@ -47,6 +47,7 @@ function FormRender(props: {
           label={item.title}
           name={name}
           key={name}
+          valuePropName={item.type === 'boolean'?'checked':'value'}
         >
           <CustomerRender type={item.type} componentProps={item.componentProps} />
         </Item>

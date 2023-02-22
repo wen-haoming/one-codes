@@ -12,12 +12,12 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     libraryName: Record<string, Set<string>>;
     libraryGlobalImport: Record<string, Set<string>>;
   } = { libraryName: {}, libraryGlobalImport: {} };
-  const importGlobalMaps:Record<string,string> = {}
+  const importGlobalMaps: Record<string, string> = {}
 
   function slotRender(idIdSchema: IdSchema): any {
     return idIdSchema.map(schema => {
-      const { componentName, libraryGlobalImport, libraryName, isSlot, defaultProps,props } = schemaMapStateSnap[schema.id];
-      importGlobalMaps[ libraryName] =  libraryGlobalImport
+      const { componentName, libraryGlobalImport, libraryName, isSlot, defaultProps, props } = schemaMapStateSnap[schema.id];
+      importGlobalMaps[libraryName] = libraryGlobalImport
 
       const newProps: any = {
         ...defaultProps,
@@ -43,8 +43,15 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
         } else {
           return true
         }
-      }).map(([key, value]) => `${key}=${typeof value === 'object' ? JSON.stringify(value) : `'${value}'`}`).join(' ') : ''
-
+      }).map(([key, value]) => {
+        if (typeof value === 'object') {
+          return `${key}={${JSON.stringify(value)}}`
+        } else if(typeof value === 'string'){
+          return `${key}="${(value)}"`
+        }else{
+          return `${key}={${(value)}}`
+        }
+      }).join(' ') : ''
       if (isSlot && schema.slot) {
         return `<${componentName} ${propsStr}>
            ${childrenStr ? childrenStr : slotRender(schema.slot)}
@@ -88,8 +95,8 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
   // 编译 umd
   const umdCode = await rollup({
     input: 'main.js',
-    output:{
-      strict:false
+    output: {
+      strict: false
     },
     plugins: [
       {
