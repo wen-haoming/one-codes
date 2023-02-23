@@ -40,7 +40,6 @@ function FormRender(props: {
   }, [formPropsConfig, defaultProps])
 
   return <Form form={form} layout="vertical" onValuesChange={(r, values) => {
-    console.log(values,'values')
     onValuesChange && onValuesChange(values)
   }}>
     {

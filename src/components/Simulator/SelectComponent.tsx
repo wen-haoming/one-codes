@@ -8,6 +8,7 @@ import AddWidget from "../AddWidget";
 
 function SelectComponent() {
   const schemaMapStateSnap = useSnapshot(schemaMapState).schemaMap;
+  const currentStateSnap = useSnapshot(currentState);
   const [postition, setPosition] = useState({ left: 0, width: 0, height: 0, top: 0 })
   const [selectPostition, setSelectPosition] = useState({ left: 0, width: 0, height: 0, top: 0 })
   const [actionsState, setActionsState] = useState<{ componentName: string, componentid: string, isSlot: boolean | undefined }>({ componentName: '', componentid: '', isSlot: undefined });
@@ -36,22 +37,34 @@ function SelectComponent() {
     }
   }
 
+  const mousemove = (e: HTMLElementEventMap['mousemove']) => {
+    requestAnimationFrame(() => getTargetComponent(e.target as HTMLElement))
+  }
+
+  const click = (e: HTMLElementEventMap['click']) => {
+    const { targetNode, left, top } = getTargetComponent(e.target as HTMLElement) as any;
+    const componentid = targetNode?.getAttribute('componentid');
+    if (targetNode && componentid) {
+      currentState.id = componentid;
+      setSelectPosition({ left: left, top: top, width: targetNode.clientWidth, height: targetNode.clientHeight });
+    }
+  }
+
+  useEffect(() => {
+    if (currentStateSnap.id) {
+      const simulatorBody = (document.getElementById('sanbox-simulator') as HTMLIFrameElement)?.contentDocument?.body;
+      const node = simulatorBody?.querySelector(`[componentid='${currentStateSnap.id}']`);
+      if (node) {
+        const { left, top } = node.getBoundingClientRect()
+        currentState.id = currentStateSnap.id;
+        setSelectPosition({ left: left, top: top, width: node.clientWidth, height: node.clientHeight });
+      }
+    }
+  }, [currentStateSnap.id])
+
   useEffect(() => {
     if (!document.getElementById('sanbox-simulator')) return
     const simulatorBody = (document.getElementById('sanbox-simulator') as HTMLIFrameElement)?.contentDocument?.body;
-
-    const mousemove = (e: HTMLElementEventMap['mousemove']) => {
-      requestAnimationFrame(() => getTargetComponent(e.target as HTMLElement))
-    }
-    const click = (e: HTMLElementEventMap['click']) => {
-      const { targetNode, left, top, width, height } = getTargetComponent(e.target as HTMLElement) as any;
-      const componentid = targetNode?.getAttribute('componentid');
-      if (targetNode && componentid) {
-        currentState.id = componentid;
-        setSelectPosition({ left: left, top: top, width: targetNode.clientWidth, height: targetNode.clientHeight });
-      }
-    }
-
     simulatorBody?.addEventListener('mousemove', mousemove);
     simulatorBody?.addEventListener('click', click);
     return () => {
@@ -66,7 +79,7 @@ function SelectComponent() {
       requestAnimationFrame(() => {
         const simulatorBody = (document.getElementById('sanbox-simulator') as HTMLIFrameElement)?.contentDocument?.body;
         const node = simulatorBody?.querySelector(`[componentid='${currentState.id}']`)
-        const { targetNode, left, top, width, height } = getTargetComponent(node as HTMLElement) as any;
+        const { targetNode, left, top } = getTargetComponent(node as HTMLElement) as any;
         setSelectPosition({ left: left, top: top, width: targetNode.clientWidth, height: targetNode.clientHeight });
       })
     }

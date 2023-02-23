@@ -31,17 +31,17 @@ if (container) {
           moduleName: 'Button',
           isSlot: false,
           formPropsConfig: {
-            block:{
-              type:'boolean',
-              title:'是否区块'
+            block: {
+              type: 'boolean',
+              title: '是否区块'
             },
-            htmlType:{
-              type:'valueEnum',
-              title:'表单提交按钮',
-              componentProps:{
-                valueEnum:{
-                  submit:'submit',
-                  'undefined':'undefined'
+            htmlType: {
+              type: 'valueEnum',
+              title: '表单提交按钮',
+              componentProps: {
+                valueEnum: {
+                  submit: 'submit',
+                  'undefined': 'undefined'
                 }
               }
             },
@@ -184,14 +184,16 @@ if (container) {
         libraryGlobalImport: 'ProComponents',
         libraryUrl: 'https://unpkg.com/@ant-design/pro-components@2.3.52/dist/components.min.js',
         libraryVersion: '2.3.52',
-        moduleConfig: [{
-          moduleName: 'ProCard',
-          isSlot: false,
-          defaultProps: {
-            title: '默认尺寸',
-            tooltip: '这是提示'
-          }
-        }]
+        moduleConfig: [
+          {
+            moduleName: 'ProCard',
+            isSlot: false,
+            defaultProps: {
+              title: '默认尺寸',
+              tooltip: '这是提示'
+            }
+          },
+        ]
       }
       ]} />)
 }

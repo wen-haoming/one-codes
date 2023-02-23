@@ -2,7 +2,9 @@ import { AppstoreOutlined, BarsOutlined } from '@ant-design/icons';
 import { Button, Segmented } from 'antd';
 import { useState } from 'react';
 import { dependencyConfigState } from '@/store';
+import ComponentTree from './ComponentTree';
 import { useSnapshot } from 'valtio';
+
 
 export type DependencyItem = {
   label: string;
@@ -35,23 +37,18 @@ const LeftPanel = () => {
     />
     <div className='flex-1 p-5px'>
       {
-        panelState === '组件树' && <div>组件树</div>
+        panelState === '组件树' && <div>
+          <ComponentTree/>
+        </div>
       }
       {
         panelState === '模块' && <div className='p-t-8px w-100%'>
             {
               ((dependencyConfigSnap.dependencyConfigState) || []).map((depButton) => {
-                
                 return  <Button type="text" className='m-b-8px flex justify-between' block key={depButton.libraryName}>
                 <span>{depButton.libraryName}</span>
                 <span className='text-gray'>{depButton.libraryVersion}</span>
               </Button>
-                // return <ConfigModal {...depButton}>
-                //   <Button type="text" className='m-b-8px flex justify-between' block key={depButton.label}>
-                //     <span>{depButton.label}</span>
-                //     <span className='text-gray'>{depButton.version}</span>
-                //   </Button>
-                // </ConfigModal>
               })
             }
           </div>
