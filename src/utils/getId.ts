@@ -1,4 +1,4 @@
-export const getId = () => Math.floor(Math.random() * 100000).toString(16);
+export const createId = () => Math.floor(Math.random() * 100000).toString(16);
 
 
 export const getAttributeNode = (

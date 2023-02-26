@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getAttributeNode } from "@/utils";
 import { useSnapshot } from "valtio";
-import { currentState, IdSchema, idSchemaState, schemaMapState } from "@/store";
+import { currentState, delSchema, IdSchema, idSchemaState, schemaMapState } from "@/store";
 import { Space, Tooltip } from "antd";
 import { DeleteOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import AddWidget from "../AddWidget";
@@ -88,21 +88,7 @@ function SelectComponent() {
   const deleComponent = () => {
     if (actionsState.componentid) {
       setTimeout(() => {
-        const searchId: any = (idSchema2: IdSchema) => {
-          return idSchema2.find((schema, idx) => {
-            if (schema.id === actionsState.componentid) {
-              idSchema2.splice(idx, 1);
-              return true
-            } else if (schema.slot) {
-              return searchId(schema.slot)
-            }
-            return false
-          })
-        }
-        searchId(idSchemaState.idSchema)
-        delete schemaMapState.schemaMap[actionsState.componentid];
-        currentState.id = ''
-        setShow(false)
+        delSchema(actionsState.componentid as string)
       })
     }
   }

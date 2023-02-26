@@ -1,8 +1,9 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { Button, Dropdown, Tree } from 'antd';
 import { useSnapshot } from 'valtio';
-import { currentState, IdSchema, idSchemaState, schemaMapState } from '@/store';
+import { addSchema, currentState, delSchema, IdSchema, idSchemaState, schemaMapState } from '@/store';
 import { DeleteOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import AddWidget from '@/components/AddWidget';
 
 
 const ComponentTree: React.FC = () => {
@@ -50,28 +51,27 @@ const ComponentTree: React.FC = () => {
         }} >{node.title as ReactNode}
           <Dropdown menu={{
             items: [
-              { label: '往上增加', key: '往下上增加', icon: <PlusOutlined style={{ fontSize: 16 }} /> },
-              { label: '往里增加', key: '往里增加', icon: <PlusOutlined style={{ fontSize: 16 }} /> },
-              { label: '往下增加', key: '往下增加', icon: <PlusOutlined style={{ fontSize: 16 }} /> },
+              {
+                label: '往上增加', key: '往上增加', icon: <PlusOutlined style={{ fontSize: 16 }} />, onClick() {
+                  addSchema('unshift', node.key as string)
+                }
+              },
+              {
+                label: '往里增加', key: '往里增加', icon: <PlusOutlined style={{ fontSize: 16 }} />, onClick() {
+                  addSchema('insert', node.key as string)
+                }
+              },
+              {
+                label: '往下增加', key: '往下增加', icon: <PlusOutlined style={{ fontSize: 16 }} />, onClick() {
+                  addSchema('shift', node.key as string)
+                }
+              },
               {
                 label: '删除', key: '删除', icon: <DeleteOutlined style={{ fontSize: 16, }} />, danger: true, onClick() {
                   setTimeout(() => {
-                    console.log(node, 'node')
-                    const searchId: any = (idSchema2: IdSchema) => {
-                      return idSchema2.find((schema, idx) => {
-                        if (schema.id === node.key) {
-                          idSchema2.splice(idx, 1);
-                          return true
-                        } else if (schema.slot) {
-                          return searchId(schema.slot)
-                        }
-                        return false
-                      })
-                    }
-                    searchId(idSchemaState.idSchema)
-                    delete schemaMapState.schemaMap[node.key];
-                    currentState.id = ''
-                  })
+                    delSchema(node.key as string)
+                  }
+                  )
                 }
               }
             ]

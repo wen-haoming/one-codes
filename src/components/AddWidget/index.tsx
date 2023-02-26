@@ -1,4 +1,4 @@
-import { getId } from '@/utils';
+import { createId } from '@/utils';
 import { CodepenOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import { ReactElement, useState, cloneElement } from 'react';
@@ -44,10 +44,10 @@ const AddWidget = (props: {
                     dependencyItem.moduleConfig!.map((componentItem, idx2) => {
                       const { isSlot, formPropsConfig = {}, defaultProps, moduleName, } = componentItem
                       return <Button
-                        className="flex-1 text-2 flex items-center"
                         type="text"
+                        className="flex-1 text-2 flex items-center"
                         onClick={() => {
-                          const id = getId();
+                          const id = createId();
                           let path = '';
                           if (slotId) {
                             const target = get(idSchemaState.idSchema, schemaMapState.schemaMap[slotId].path);
@@ -87,10 +87,7 @@ const AddWidget = (props: {
                         }
                         key={componentItem.moduleName}
                       >
-                        <CodepenOutlined
-                          style={{ color: '#2558fb' }}
-                          className="m-r-3 text-4"
-                        />
+                        
                         {componentItem.moduleName}
                       </Button>
                     })

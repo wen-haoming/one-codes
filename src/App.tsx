@@ -21,18 +21,20 @@ export type ModuleProps = Record<string, {
   componentProps?: Record<string, any>
 }>
 
-type DependencyItem = {
+export type DependencyItem = {
   libraryName: string // 显示的模块名称
   libraryGlobalImport?: string; // 模块引入名
   libraryUrl: string; // 模块 url
   libraryVersion: string; // 模块 版本
   linkUrl?: string[]; // 样式文件
-  moduleConfig?: { // 组件类别
-    moduleName: string;
-    isSlot: boolean;
-    formPropsConfig?: ModuleProps
-    defaultProps?: Record<string, any>
-  }[]
+  moduleConfig?: ModuleConfig[]
+}
+
+export type ModuleConfig = { // 组件类别
+  moduleName: string;
+  isSlot: boolean;
+  formPropsConfig?: ModuleProps
+  defaultProps?: Record<string, any>
 }
 
 export type DependencyConfig = DependencyItem[]
@@ -47,8 +49,6 @@ function OneCodes(props: {
   useEffect(() => {
     dependencyConfigState.dependencyConfigState = dependencyConfig;
   }, [])
-
-  console.log(currentTheme,'currentTheme')
 
   return (
     <ConfigProvider locale={zhCN}
