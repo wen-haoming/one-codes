@@ -1,6 +1,5 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { Button, Dropdown, Tree } from 'antd';
-import type { DataNode } from 'antd/es/tree';
 import { useSnapshot } from 'valtio';
 import { currentState, IdSchema, idSchemaState, schemaMapState } from '@/store';
 import { DeleteOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
@@ -14,7 +13,7 @@ const ComponentTree: React.FC = () => {
   const schemaMapSnap = useSnapshot(schemaMapState).schemaMap;
 
   const treeData = useMemo(() => {
-    const getTree:any = (schemaList: typeof idSchemaStateSnap) => {
+    const getTree: any = (schemaList: typeof idSchemaStateSnap) => {
       return schemaList.map(item => {
         const { id, slot } = item;
         const { componentName, libraryName } = schemaMapSnap[id]
@@ -44,34 +43,37 @@ const ComponentTree: React.FC = () => {
       blockNode
       showLine
       titleRender={(node) => {
-        return <div className='group flex justify-between align-middle' onClick={()=>{
-          if(node.key){
+        return <div className='group flex justify-between align-middle' onClick={() => {
+          if (node.key) {
             currentState.id = String(node.key);
           }
         }} >{node.title as ReactNode}
           <Dropdown menu={{
             items: [
               { label: '往上增加', key: '往下上增加', icon: <PlusOutlined style={{ fontSize: 16 }} /> },
+              { label: '往里增加', key: '往里增加', icon: <PlusOutlined style={{ fontSize: 16 }} /> },
               { label: '往下增加', key: '往下增加', icon: <PlusOutlined style={{ fontSize: 16 }} /> },
-              { label: '删除', key: '删除', icon: <DeleteOutlined style={{ fontSize: 16, }} />, danger: true,onClick(){
-                setTimeout(() => {
-                  console.log(node,'node')
-                  const searchId: any = (idSchema2: IdSchema) => {
-                    return idSchema2.find((schema, idx) => {
-                      if (schema.id === node.key) {
-                        idSchema2.splice(idx, 1);
-                        return true
-                      } else if (schema.slot) {
-                        return searchId(schema.slot)
-                      }
-                      return false
-                    })
-                  }
-                  searchId(idSchemaState.idSchema)
-                  delete schemaMapState.schemaMap[node.key];
-                  currentState.id = ''
-                })
-              } }
+              {
+                label: '删除', key: '删除', icon: <DeleteOutlined style={{ fontSize: 16, }} />, danger: true, onClick() {
+                  setTimeout(() => {
+                    console.log(node, 'node')
+                    const searchId: any = (idSchema2: IdSchema) => {
+                      return idSchema2.find((schema, idx) => {
+                        if (schema.id === node.key) {
+                          idSchema2.splice(idx, 1);
+                          return true
+                        } else if (schema.slot) {
+                          return searchId(schema.slot)
+                        }
+                        return false
+                      })
+                    }
+                    searchId(idSchemaState.idSchema)
+                    delete schemaMapState.schemaMap[node.key];
+                    currentState.id = ''
+                  })
+                }
+              }
             ]
           }} placement="bottomLeft" arrow={false}>
             <Button className='hidden group-hover:inline-block' size="small" type="text" icon={<EllipsisOutlined className='font-semibold text-gray' />}></Button>

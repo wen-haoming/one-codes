@@ -1,4 +1,5 @@
 import App from './App';
+import './index.css';
 import { createRoot } from 'react-dom/client';
 
 const container = document.getElementById('root');
@@ -6,6 +7,7 @@ const container = document.getElementById('root');
 if (container) {
   const root = createRoot(container);
   root.render(<App
+    style={{height:'100%'}}
     dependencyConfig={
       [{
         libraryName: 'react',
@@ -148,11 +150,7 @@ if (container) {
               }
             }
           },
-          defaultProps: {
-            style: {
-              minHeight: 300
-            }
-          }
+          defaultProps: {}
         },
         {
           moduleName: 'Form.Item',
@@ -172,9 +170,7 @@ if (container) {
             }
           },
           defaultProps: {
-            style: {
-              minHeight: 50
-            }
+           
           }
         }
         ]

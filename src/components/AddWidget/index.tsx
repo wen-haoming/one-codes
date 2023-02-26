@@ -43,8 +43,9 @@ const AddWidget = (props: {
                   {
                     dependencyItem.moduleConfig!.map((componentItem, idx2) => {
                       const { isSlot, formPropsConfig = {}, defaultProps, moduleName, } = componentItem
-                      return <div
-                        className="widgetBtn flex-1 text-2 flex items-center"
+                      return <Button
+                        className="flex-1 text-2 flex items-center"
+                        type="text"
                         onClick={() => {
                           const id = getId();
                           let path = '';
@@ -91,7 +92,7 @@ const AddWidget = (props: {
                           className="m-r-3 text-4"
                         />
                         {componentItem.moduleName}
-                      </div>
+                      </Button>
                     })
                   }
                 </div>

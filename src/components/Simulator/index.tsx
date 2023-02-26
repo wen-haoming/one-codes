@@ -35,8 +35,6 @@ function Simulator() {
     }
   }, [])
 
-
-
   useEffect(() => {
     const scriptText = depsMapSnap.map((dependency, idx) => {
       return `<script data-sandbox-script=${dependency.libraryName}  src="${dependency.libraryUrl}"> </script>`

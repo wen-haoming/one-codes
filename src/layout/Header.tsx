@@ -1,10 +1,20 @@
+import { Button, Space, theme } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import { Switch } from 'antd';
+import { ReactComponent as LightSvg } from '../assets/light.svg'
+import { ReactComponent as DarkSvg } from '../assets/dark.svg'
+import { currentState } from '@/store';
+import { useSnapshot } from 'valtio';
+
+const { useToken } = theme
 
 const Header = () => {
 
+  const { token } = useToken()
+  const currentStateSnap = useSnapshot(currentState)
   return (
     <>
-      <div className="h-10 flex items-center px-4 justify-between border-b-1	 border-brand-grey">
+      <div className="h-10 flex items-center px-4 justify-between" >
         <span className="flex text-sm text-brand-primary font-semibold ">
           <svg
             width="20"
@@ -30,18 +40,20 @@ const Header = () => {
           </svg>
           One-codes
         </span>
-        <div className="flex items-center">
-          <div className="btn m-r1" onClick={() => { }}>
-            <DownloadOutlined className="m-r-1" />
+        <Space align="center">
+          <Switch checked={ currentStateSnap.theme ===  'light'} onChange={(checked) => {
+            currentState.theme = checked ? 'light' : 'dark'
+          }} checkedChildren={<LightSvg />} unCheckedChildren={<DarkSvg />} />
+          <Button type="primary" size="small" icon={<DownloadOutlined />} onClick={() => { }}>
             出码
-          </div>
+          </Button>
           <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://github.com/wen-haoming/antd-one-editor"
             className="i-mdi-github text-black text-size-2xl cursor-pointer hover:text-brand-primary"
           />
-        </div>
+        </Space>
       </div>
     </>
   );
