@@ -3,6 +3,7 @@ import { proxy, subscribe } from "valtio";
 import { currentState } from "./currentState";
 import { schemaMapState } from "./schemaMap";
 import get from 'lodash.get'
+import { JSONProps } from "@/layout/LeftPanel/JSONView";
 
 export type IdSchema = {
   id: string;
@@ -35,14 +36,31 @@ export const delSchema = (id: string) => {
 }
 
 
-export const addSchema = (type: 'unshift' | 'shift' | 'insert', schemaId?: string) => {
-  let path = '';
+export const addSchema = (type: 'unshift' | 'shift' | 'insert', {
+  schemaId,
+  formPropsConfig,
+  isSlot,
+  componentName:moduleName,
+  path,
+  libraryName,
+  libraryGlobalImport,
+  defaultProps,
+}: {
+  schemaId?: string
+  formPropsConfig: any
+  isSlot: any
+  componentName: any
+  path: any
+  libraryName: any
+  libraryGlobalImport: any
+  defaultProps: any
+}) => {
 
   if (schemaId) {
     const id = createId();
     const target = get(idSchemaState.idSchema, schemaMapState.schemaMap[schemaId].path);
 
-    const searchId:any = (idSchemaList: IdSchema, targetId: string) => {
+    const searchId: any = (idSchemaList: IdSchema, targetId: string) => {
       for (const index in idSchemaList) {
         if (idSchemaList[index].id === targetId) {
           return {
@@ -50,7 +68,7 @@ export const addSchema = (type: 'unshift' | 'shift' | 'insert', schemaId?: strin
             index
           }
         } else if (idSchemaList[index].slot) {
-          return searchId(idSchemaList[index].slot,targetId)
+          return searchId(idSchemaList[index].slot, targetId)
         }
       }
       return {
@@ -58,20 +76,36 @@ export const addSchema = (type: 'unshift' | 'shift' | 'insert', schemaId?: strin
         index: null
       }
     }
-
+    const { index, list } = searchId(idSchemaState.idSchema, schemaId)
+    let addPath = '';
     if (target && type === 'insert') {
       // 插入子元素
-      target.slot.push({
-        id,
-      });
+      if (list[index].slot) {
+        list[index].slot.push({ id })
+      } else {
+        list[index].slot = [{ id }]
+      }
+      addPath  = `${schemaMapState.schemaMap[id].path}.slot[${target.slot.length - 1}]`;
     } else if (target && type === "unshift") {
       // 往上增加
-      const obj = searchId(idSchemaState.idSchema, schemaId)
-      console.log(obj, '==')
+      list.splice(index - 1, 0, { id })
+      addPath  = `${schemaMapState.schemaMap[id].path}[${index - 1}]`;
     } else if (target && type === "shift") {
       //  往下新增
-      const obj = searchId(idSchemaState.idSchema, schemaId)
-      console.log(obj, '==')
+      list.splice(index + 1, 0, { id })
+      addPath  = `${schemaMapState.schemaMap[id].path}[${index + 1}]`;
     }
+
+    schemaMapState.schemaMap[id] = {
+      formPropsConfig: JSON.parse(JSON.stringify(formPropsConfig)),
+      isSlot: isSlot,
+      componentName: moduleName,
+      path: path,
+      libraryName: libraryName!,
+      libraryGlobalImport: libraryGlobalImport!,
+      defaultProps: JSON.parse(JSON.stringify(((defaultProps || []) as JSONProps[])))
+    }
+
+
   }
 }

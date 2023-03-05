@@ -21,7 +21,7 @@ function SelectComponent() {
       setShow(true)
       if (targetNode.querySelector('.components-actions')) return
       const { left, top, width, height } = targetNode.getBoundingClientRect();
-      setPosition({ left: left - 3, top: top - 3, width: width + 2, height: height + 2 });
+      setPosition({ left: left, top: top, width: width, height: height });
       setActionsState({
         componentName: schemaMapStateSnap[componentid].componentName,
         componentid,
@@ -89,16 +89,17 @@ function SelectComponent() {
     if (actionsState.componentid) {
       setTimeout(() => {
         delSchema(actionsState.componentid as string)
+        setShow(false)
       })
     }
   }
 
   return <>
-    {<div style={{ display: show ? 'block' : 'none' }}>
-      <div className="components-actions absolute border-1px border-brand-primary border-dashed pointer-events-none p-r-2px  "
+    <div style={{ display: show ? 'block' : 'none' }}>
+      <div className="components-actions absolute border-1px border-brand-primary border-dashed pointer-events-none  "
         style={postition}
       />
-      <Space className="components-actions rounded-2px absolute bg-brand-primary p-x-5px p-y-3px text-white text-xs" style={{ left: postition.left + 3, top: postition.top + postition.height }}>
+      <Space className="components-actions rounded-2px absolute bg-brand-primary p-x-5px p-y-3px text-white text-xs z-99" style={{ left: postition.left, top: postition.top + postition.height }}>
         <span>
           {actionsState.componentName}
         </span>
@@ -109,7 +110,7 @@ function SelectComponent() {
           <DeleteOutlined className="text-12px cursor-pointer" onClick={deleComponent} />
         </Tooltip>
       </Space>
-    </div>}
+    </div>
     {currentState.id && <div className="components-actions absolute border-2px border-brand-primary pointer-events-none " style={selectPostition}></div>}
   </>
 }

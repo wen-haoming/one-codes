@@ -1,5 +1,4 @@
 import { createId } from '@/utils';
-import { CodepenOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import { ReactElement, useState, cloneElement } from 'react';
 import get from 'lodash.get'
@@ -87,7 +86,6 @@ const AddWidget = (props: {
                         }
                         key={componentItem.moduleName}
                       >
-                        
                         {componentItem.moduleName}
                       </Button>
                     })

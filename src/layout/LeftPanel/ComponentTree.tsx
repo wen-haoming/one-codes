@@ -53,25 +53,24 @@ const ComponentTree: React.FC = () => {
             items: [
               {
                 label: '往上增加', key: '往上增加', icon: <PlusOutlined style={{ fontSize: 16 }} />, onClick() {
-                  addSchema('unshift', node.key as string)
+                  // addSchema('unshift', node.key as string,{})
                 }
               },
               {
                 label: '往里增加', key: '往里增加', icon: <PlusOutlined style={{ fontSize: 16 }} />, onClick() {
-                  addSchema('insert', node.key as string)
+                  // addSchema('insert', node.key as string)
                 }
               },
               {
                 label: '往下增加', key: '往下增加', icon: <PlusOutlined style={{ fontSize: 16 }} />, onClick() {
-                  addSchema('shift', node.key as string)
+                  // addSchema('shift', node.key as string)
                 }
               },
               {
                 label: '删除', key: '删除', icon: <DeleteOutlined style={{ fontSize: 16, }} />, danger: true, onClick() {
-                  setTimeout(() => {
+                  Promise.resolve().then(()=>{
                     delSchema(node.key as string)
-                  }
-                  )
+                  })
                 }
               }
             ]
