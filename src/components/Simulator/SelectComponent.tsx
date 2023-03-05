@@ -23,9 +23,9 @@ function SelectComponent() {
       const { left, top, width, height } = targetNode.getBoundingClientRect();
       setPosition({ left: left, top: top, width: width, height: height });
       setActionsState({
-        componentName: schemaMapStateSnap[componentid].componentName,
+        componentName: schemaMapStateSnap[componentid]?.componentName,
         componentid,
-        isSlot: schemaMapStateSnap[componentid].isSlot
+        isSlot: Boolean(schemaMapStateSnap[componentid]?.isSlot)
       })
       return {
         targetNode,

@@ -13,7 +13,8 @@ const defaultData = {
 };
 
 
-export type ModulePropsTypeVal = 'string' | 'boolean' | 'number' | 'valueEnum' | 'options'
+export type JsxType = 'jsx' | '[]jsx' | 'fnToJsx'
+export type ModulePropsTypeVal = 'string' | 'boolean' | 'number' | 'valueEnum' | 'options' | JsxType
 
 export type ModuleProps = Record<string, {
   type: ModulePropsTypeVal
@@ -32,7 +33,7 @@ export type DependencyItem = {
 
 export type ModuleConfig = { // 组件类别
   moduleName: string;
-  isSlot: boolean;
+  isSlot?: boolean;
   formPropsConfig?: ModuleProps
   defaultProps?: Record<string, any>
 }

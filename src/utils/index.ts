@@ -3,3 +3,4 @@ export * from './getId';
 // export * from './parse';
 // export * from './propsTramsform';
 export * from './randomId';
+export * from './parseProps'

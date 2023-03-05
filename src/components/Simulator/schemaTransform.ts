@@ -1,6 +1,7 @@
 import { IdSchema, SchemaMap } from '@/store'
 import { rollup } from '@rollup/browser'
 import { transform } from '@babel/standalone'
+import { jsxProps2JsxEle } from '@/utils';
 
 /**
  *  
@@ -20,7 +21,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
       const { libraryGlobalImport, libraryName, isSlot, defaultProps, props } = schemaMapStateSnap[schema.id];
       let [componentName, subComponentName] = schemaMapStateSnap[schema.id].componentName.split('.')
       importGlobalMaps[libraryName] = libraryGlobalImport;
-      const newProps: any = {
+      let newProps: any = {
         ...defaultProps,
         ...props,
         componentid: schema.id
@@ -40,8 +41,6 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
         throw new Error(errorMsg)
       }
 
-
-
       let childrenStr: string = '';
       // 添加 import 的语句依赖
       if (improtMaps.libraryGlobalImport[libraryGlobalImport] && improtMaps.libraryName[libraryName]) {
@@ -52,7 +51,10 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
         improtMaps.libraryName[libraryName] = new Set([componentName])
       }
 
-      const hasProps = Object.keys(newProps).length > 0
+
+      const hasProps = Object.keys(newProps).length > 0;
+      newProps =  jsxProps2JsxEle(newProps) // 把 jsx type 转为 jsxEle
+
       const propsStr = hasProps ? Object.entries(newProps).filter(([key, value]) => {
         if (key === 'children' && typeof value !== 'object') {
           childrenStr = String(value)
@@ -83,7 +85,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     ).join('\n')
   }
 
-  const jsx = slotRender(idSchemaStateSnap)
+  const jsx = slotRender(idSchemaStateSnap).replace(/\"\[{{(.*?)}}\]\"/g,`$1`)
   const hasSubModuneMaps = Object.keys(subModuneMaps).length > 0;
   // 组件文件
   const getMainjsType = (type: 'libraryName' | 'libraryGlobalImport') => {
@@ -108,6 +110,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
   ReactDOM?.render(<App />, document.getElementById('root'));
   `
   }
+
   // 编译jsx
   const transformEsModule = transform(getMainjsType("libraryGlobalImport"), { presets: ['es2016', 'react'], });
 

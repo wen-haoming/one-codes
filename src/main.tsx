@@ -7,7 +7,7 @@ const container = document.getElementById('root');
 if (container) {
   const root = createRoot(container);
   root.render(<App
-    style={{height:'100%'}}
+    style={{ height: '100%' }}
     dependencyConfig={
       [{
         libraryName: 'react',
@@ -170,7 +170,36 @@ if (container) {
             }
           },
           defaultProps: {
-           
+
+          }
+        },
+        {
+          moduleName: 'Tabs',
+          formPropsConfig: {
+            items: {
+              type: 'options',
+              title: '配置选项卡内容',
+            }
+          },
+          defaultProps: {
+            items: [
+              {
+                label: 'label1',
+                key: 'label1',
+                children: {
+                  type: 'jsx',
+                  value: 'slot'
+                }
+              },
+              {
+                label: 'label2',
+                key: 'label2',
+                children: {
+                  type: 'jsx',
+                  value: 'slot2'
+                }
+              },
+            ]
           }
         }
         ]

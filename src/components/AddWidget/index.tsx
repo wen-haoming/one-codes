@@ -74,7 +74,7 @@ const AddWidget = (props: {
                           }
                           schemaMapState.schemaMap[id] = {
                             formPropsConfig: JSON.parse(JSON.stringify(formPropsConfig)),
-                            isSlot: isSlot,
+                            isSlot: Boolean(isSlot),
                             componentName: moduleName,
                             path: path,
                             libraryName: dependencyItem.libraryName!,
