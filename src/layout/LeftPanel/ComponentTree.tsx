@@ -16,8 +16,8 @@ const ComponentTree: React.FC = () => {
   const treeData = useMemo(() => {
     const getTree: any = (schemaList: typeof idSchemaStateSnap) => {
       return schemaList.map(item => {
-        const { id, slot } = item;
-        const { componentName, libraryName } = schemaMapSnap[id]
+        const { id, slot,componentName,libraryName } = item;
+        // const { componentName, libraryName } = schemaMapSnap[id]
         return {
           title: componentName,
           key: id,

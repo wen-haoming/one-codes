@@ -188,7 +188,9 @@ if (container) {
                 key: 'label1',
                 children: {
                   type: 'jsx',
-                  value: 'slot'
+                  props: {
+                    children: 'slot'
+                  }
                 }
               },
               {
@@ -196,7 +198,9 @@ if (container) {
                 key: 'label2',
                 children: {
                   type: 'jsx',
-                  value: 'slot2'
+                  props: {
+                    children: 'slot'
+                  }
                 }
               },
             ]

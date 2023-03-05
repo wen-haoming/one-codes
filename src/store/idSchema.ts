@@ -4,12 +4,20 @@ import { currentState } from "./currentState";
 import { schemaMapState } from "./schemaMap";
 import get from 'lodash.get'
 import { JSONProps } from "@/layout/LeftPanel/JSONView";
+import { ModuleProps } from "@/App";
 
 export type IdSchema = {
+  type: 'jsx';
   id: string;
-  slot?: {
-    id: string;
-  }[];
+  formPropsConfig?: ModuleProps
+  componentName: string; // 组件名称
+  configProps?: any[]; // 右侧面板配置项
+  libraryName: string; // umd 包全局的名称
+  libraryGlobalImport: string;
+  isSlot?: boolean; //是否支持组件嵌套
+  defaultProps?: Record<string, any>
+  props?: Record<string, any>
+  slot?: IdSchema[];
 }[];
 
 export const idSchemaState: { idSchema: IdSchema } = proxy((JSON.parse(localStorage.getItem('idSchema') as any)) || { idSchema: [] });
@@ -35,12 +43,11 @@ export const delSchema = (id: string) => {
   currentState.id = ''
 }
 
-
 export const addSchema = (type: 'unshift' | 'shift' | 'insert', {
   schemaId,
   formPropsConfig,
   isSlot,
-  componentName:moduleName,
+  componentName: moduleName,
   path,
   libraryName,
   libraryGlobalImport,
@@ -85,15 +92,15 @@ export const addSchema = (type: 'unshift' | 'shift' | 'insert', {
       } else {
         list[index].slot = [{ id }]
       }
-      addPath  = `${schemaMapState.schemaMap[id].path}.slot[${target.slot.length - 1}]`;
+      addPath = `${schemaMapState.schemaMap[id].path}.slot[${target.slot.length - 1}]`;
     } else if (target && type === "unshift") {
       // 往上增加
       list.splice(index - 1, 0, { id })
-      addPath  = `${schemaMapState.schemaMap[id].path}[${index - 1}]`;
+      addPath = `${schemaMapState.schemaMap[id].path}[${index - 1}]`;
     } else if (target && type === "shift") {
       //  往下新增
       list.splice(index + 1, 0, { id })
-      addPath  = `${schemaMapState.schemaMap[id].path}[${index + 1}]`;
+      addPath = `${schemaMapState.schemaMap[id].path}[${index + 1}]`;
     }
 
     schemaMapState.schemaMap[id] = {

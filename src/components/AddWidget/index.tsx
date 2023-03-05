@@ -1,4 +1,4 @@
-import { createId } from '@/utils';
+import { createId, getJsxEle } from '@/utils';
 import { Button, Popover } from 'antd';
 import { ReactElement, useState, cloneElement } from 'react';
 import get from 'lodash.get'
@@ -46,10 +46,13 @@ const AddWidget = (props: {
                         type="text"
                         className="flex-1 text-2 flex items-center"
                         onClick={() => {
+                          
                           const id = createId();
                           let path = '';
                           if (slotId) {
+
                             const target = get(idSchemaState.idSchema, schemaMapState.schemaMap[slotId].path);
+                            
                             if (target) {
                               if (target.slot) {
                                 target.slot.push({
@@ -68,18 +71,19 @@ const AddWidget = (props: {
                             }
                           } else {
                             idSchemaState.idSchema.push({
+                              type:'jsx',
                               id,
+                              formPropsConfig: JSON.parse(JSON.stringify(formPropsConfig)),
+                              isSlot: Boolean(isSlot),
+                              componentName: moduleName,
+                              libraryName: dependencyItem.libraryName!,
+                              libraryGlobalImport: dependencyItem.libraryGlobalImport!,
+                              defaultProps: JSON.parse(JSON.stringify(((defaultProps || []) as JSONProps[])))
                             });
                             path = `[${idSchemaState.idSchema.length - 1}]`
                           }
                           schemaMapState.schemaMap[id] = {
-                            formPropsConfig: JSON.parse(JSON.stringify(formPropsConfig)),
-                            isSlot: Boolean(isSlot),
-                            componentName: moduleName,
                             path: path,
-                            libraryName: dependencyItem.libraryName!,
-                            libraryGlobalImport: dependencyItem.libraryGlobalImport!,
-                            defaultProps: JSON.parse(JSON.stringify(((defaultProps || []) as JSONProps[])))
                           };
                           setOpen(false);
                         }

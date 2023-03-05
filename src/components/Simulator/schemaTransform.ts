@@ -1,7 +1,8 @@
-import { IdSchema, SchemaMap } from '@/store'
+import { IdSchema, idSchemaState, SchemaMap } from '@/store'
 import { rollup } from '@rollup/browser'
 import { transform } from '@babel/standalone'
 import { jsxProps2JsxEle } from '@/utils';
+import getVal from 'lodash.get'
 
 /**
  *  
@@ -18,8 +19,11 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
 
   function slotRender(idIdSchema: IdSchema): any {
     return idIdSchema.map(schema => {
-      const { libraryGlobalImport, libraryName, isSlot, defaultProps, props } = schemaMapStateSnap[schema.id];
-      let [componentName, subComponentName] = schemaMapStateSnap[schema.id].componentName.split('.')
+      const path = schemaMapStateSnap[schema.id]?.path;
+      if (schema.type !== 'jsx') return
+      if (!getVal(idSchemaState.idSchema, path)) return
+      const { libraryGlobalImport, libraryName, isSlot, defaultProps, props, componentName: ncomponentName } = getVal(idSchemaState.idSchema, path) || {}
+      let [componentName, subComponentName] = ncomponentName.split('.')
       importGlobalMaps[libraryName] = libraryGlobalImport;
       let newProps: any = {
         ...defaultProps,
@@ -35,11 +39,6 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
           subModuneMaps[componentName] = new Set([subComponentName])
         }
       }
-      if (schemaMapStateSnap[schema.id].componentName.split('.').length > 2) {
-        const errorMsg = `暂时不支持两层以上的模块名称引用 --->${componentName}`;
-        console.error(errorMsg);
-        throw new Error(errorMsg)
-      }
 
       let childrenStr: string = '';
       // 添加 import 的语句依赖
@@ -53,7 +52,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
 
 
       const hasProps = Object.keys(newProps).length > 0;
-      newProps =  jsxProps2JsxEle(newProps) // 把 jsx type 转为 jsxEle
+      newProps = jsxProps2JsxEle(newProps, (slots) => slotRender(slots)) // 把 jsx type 转为 jsxEle
 
       const propsStr = hasProps ? Object.entries(newProps).filter(([key, value]) => {
         if (key === 'children' && typeof value !== 'object') {
@@ -71,6 +70,8 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
           return `${key}={${(value)}}`
         }
       }).join(' ') : ''
+
+
       if (isSlot && schema.slot) {
         return `<${subComponentName || componentName} ${propsStr}>
            ${childrenStr ? childrenStr : ''}
@@ -85,7 +86,8 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     ).join('\n')
   }
 
-  const jsx = slotRender(idSchemaStateSnap).replace(/\"\[{{(.*?)}}\]\"/g,`$1`)
+  const jsx = slotRender(idSchemaStateSnap).replace(/\"\[{{(.*?)}}\]\"/g, `$1`)
+
   const hasSubModuneMaps = Object.keys(subModuneMaps).length > 0;
   // 组件文件
   const getMainjsType = (type: 'libraryName' | 'libraryGlobalImport') => {

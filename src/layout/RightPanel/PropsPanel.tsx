@@ -1,22 +1,40 @@
 import FormRender from '@/components/FormRender';
-import { currentState, schemaMapState } from '@/store';
+import { currentState, idSchemaState, schemaMapState } from '@/store';
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
+import getVal from 'lodash.get'
 
 function PropsPanel() {
   const id = useSnapshot(currentState).id;
   const schemaMapSnap = useSnapshot(schemaMapState).schemaMap;
-  const { formPropsConfig = {}, defaultProps = {} ,props} = schemaMapSnap[id!] || {}
+  const path = schemaMapSnap[id!]?.path
 
-  const formPropsConfigMemo = useMemo(() => JSON.parse(JSON.stringify(formPropsConfig)), [formPropsConfig])
-  const defaultPropsMemo = useMemo(() => ({...defaultProps,...props}), [defaultProps,props])
+  const formPropsConfigMemo = useMemo(() => {
+    let formPropsConfig = {};
+    if (path && getVal(idSchemaState.idSchema, path)) {
+      formPropsConfig = getVal(idSchemaState.idSchema, path).formPropsConfig;
+    }
+    return JSON.parse(JSON.stringify(formPropsConfig))
+  }, [id])
+
+  const defaultPropsMemo = useMemo(() => {
+    let props = {};
+    if (path && getVal(idSchemaState.idSchema, path)) {
+      const { defaultProps, props: compProps } = getVal(idSchemaState.idSchema, path)
+      props = {
+        ...defaultProps, ...compProps
+      }
+    }
+    return props
+  }, [id])
 
   if (!id) {
     return <div className='text-coolgray'>请选择组件~</div>
   }
 
   const valuesChange = (values: Record<string, any>) => {
-    const getComponentItem = currentState.id && schemaMapState.schemaMap[currentState.id]
+    const path = currentState.id && schemaMapState.schemaMap[currentState.id].path;
+    const getComponentItem = getVal(idSchemaState.idSchema, path)
     if (getComponentItem) {
       getComponentItem.props = values;
     }

@@ -3,11 +3,13 @@ import { getAttributeNode } from "@/utils";
 import { useSnapshot } from "valtio";
 import { currentState, delSchema, IdSchema, idSchemaState, schemaMapState } from "@/store";
 import { Space, Tooltip } from "antd";
+import getVal from 'lodash.get'
 import { DeleteOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import AddWidget from "../AddWidget";
 
 function SelectComponent() {
   const schemaMapStateSnap = useSnapshot(schemaMapState).schemaMap;
+  const idSchemaSnap = useSnapshot(idSchemaState).idSchema;
   const currentStateSnap = useSnapshot(currentState);
   const [postition, setPosition] = useState({ left: 0, width: 0, height: 0, top: 0 })
   const [selectPostition, setSelectPosition] = useState({ left: 0, width: 0, height: 0, top: 0 })
@@ -22,11 +24,23 @@ function SelectComponent() {
       if (targetNode.querySelector('.components-actions')) return
       const { left, top, width, height } = targetNode.getBoundingClientRect();
       setPosition({ left: left, top: top, width: width, height: height });
-      setActionsState({
-        componentName: schemaMapStateSnap[componentid]?.componentName,
-        componentid,
-        isSlot: Boolean(schemaMapStateSnap[componentid]?.isSlot)
-      })
+      const path = schemaMapStateSnap[componentid]?.path;
+
+      if (getVal(idSchemaState.idSchema, path)?.componentName) {
+        setActionsState({
+          componentName: getVal(idSchemaState.idSchema, path)?.componentName,
+          componentid,
+          isSlot: Boolean(getVal(idSchemaState.idSchema, path)?.isSlot),
+        })
+      } else {
+        // slot props
+        setActionsState({
+          componentName: 'slot',
+          componentid,
+          isSlot: true,
+        })
+      }
+
       return {
         targetNode,
         left, top, width, height
@@ -83,7 +97,7 @@ function SelectComponent() {
         setSelectPosition({ left: left, top: top, width: targetNode.clientWidth, height: targetNode.clientHeight });
       })
     }
-  }, [schemaMapStateSnap])
+  }, [idSchemaSnap])
 
   const deleComponent = () => {
     if (actionsState.componentid) {
