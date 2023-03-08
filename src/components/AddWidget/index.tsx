@@ -48,39 +48,46 @@ const AddWidget = (props: {
                         onClick={() => {
                           const id = createId();
                           let path = '';
-                          if (slotId) {
-                            const target = get(idSchemaState.idSchema, schemaMapState.schemaMap[slotId].path);
-                            if (target) {
-                              if (target.slot) {
-                                target.slot.push({
-                                  id,
-                                });
-                              } else {
-                                target.slot = [({
-                                  id,
-                                })]
+                          console.log(slotId, 'slotId')
+                          const isPropsSlotId = Array.isArray(JSON.parse(slotId))
+                          if (!isPropsSlotId) {
+                            if (slotId) {
+                              const target = get(idSchemaState.idSchema, schemaMapState.schemaMap[slotId].path);
+                              if (target) {
+                                if (target.slot) {
+                                  target.slot.push({
+                                    id,
+                                  });
+                                } else {
+                                  target.slot = [({
+                                    id,
+                                  })]
+                                }
                               }
-                            }
-                            if (schemaMapState.schemaMap[slotId].path) {
-                              path = `${schemaMapState.schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
+                              if (schemaMapState.schemaMap[slotId].path) {
+                                path = `${schemaMapState.schemaMap[slotId].path}.slot[${target.slot.length - 1}]`;
+                              } else {
+                                path = `[${target.slot.length - 1}]`
+                              }
                             } else {
-                              path = `[${target.slot.length - 1}]`
+                              idSchemaState.idSchema.push({
+                                id,
+                              });
+                              path = `[${idSchemaState.idSchema.length - 1}]`
                             }
+                            schemaMapState.schemaMap[id] = {
+                              formPropsConfig: JSON.parse(JSON.stringify(formPropsConfig)),
+                              isSlot: Boolean(isSlot),
+                              componentName: moduleName,
+                              path: path,
+                              libraryName: dependencyItem.libraryName!,
+                              libraryGlobalImport: dependencyItem.libraryGlobalImport!,
+                              defaultProps: JSON.parse(JSON.stringify(((defaultProps || []) as JSONProps[])))
+                            };
                           } else {
-                            idSchemaState.idSchema.push({
-                              id,
-                            });
-                            path = `[${idSchemaState.idSchema.length - 1}]`
+
                           }
-                          schemaMapState.schemaMap[id] = {
-                            formPropsConfig: JSON.parse(JSON.stringify(formPropsConfig)),
-                            isSlot: Boolean(isSlot),
-                            componentName: moduleName,
-                            path: path,
-                            libraryName: dependencyItem.libraryName!,
-                            libraryGlobalImport: dependencyItem.libraryGlobalImport!,
-                            defaultProps: JSON.parse(JSON.stringify(((defaultProps || []) as JSONProps[])))
-                          };
+
                           setOpen(false);
                         }
                         }

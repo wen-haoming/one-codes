@@ -99,7 +99,7 @@ function SelectComponent() {
       <div className="components-actions absolute border-1px border-brand-primary border-dashed pointer-events-none  "
         style={postition}
       />
-      <Space className="components-actions rounded-2px absolute bg-brand-primary p-x-5px p-y-3px text-white text-xs z-99" style={{ left: postition.left, top: postition.top + postition.height }}>
+      {currentState.id === actionsState.componentid && <Space className="components-actions rounded-2px absolute bg-brand-primary p-x-5px p-y-3px text-white text-xs z-99" style={{ left: postition.left, top: postition.top + postition.height }}>
         <span>
           {actionsState.componentName}
         </span>
@@ -109,7 +109,7 @@ function SelectComponent() {
         <Tooltip title={<span className="text-12px">删除</span>} arrow={false} placement="bottom" >
           <DeleteOutlined className="text-12px cursor-pointer" onClick={deleComponent} />
         </Tooltip>
-      </Space>
+      </Space>}
     </div>
     {currentState.id && <div className="components-actions absolute border-2px border-brand-primary pointer-events-none " style={selectPostition}></div>}
   </>

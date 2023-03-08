@@ -6,8 +6,8 @@ export type UiItem = {
   componentName: string; // 组件名称
   configProps?: any[]; // 右侧面板配置项
   path: string; // 路径
-  libraryName: string; // umd 包全局的名称
-  libraryGlobalImport:string;
+  libraryName?: string; // umd 包全局的名称
+  libraryGlobalImport?:string;
   isSlot?: boolean; //是否支持组件嵌套
   defaultProps?: Record<string, any>
   props?:Record<string,any>

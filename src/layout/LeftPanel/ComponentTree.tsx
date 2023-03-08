@@ -3,7 +3,6 @@ import { Button, Dropdown, Tree } from 'antd';
 import { useSnapshot } from 'valtio';
 import { addSchema, currentState, delSchema, IdSchema, idSchemaState, schemaMapState } from '@/store';
 import { DeleteOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
-import AddWidget from '@/components/AddWidget';
 
 
 const ComponentTree: React.FC = () => {

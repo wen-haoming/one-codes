@@ -20,7 +20,9 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     return idIdSchema.map(schema => {
       const { libraryGlobalImport, libraryName, isSlot, defaultProps, props } = schemaMapStateSnap[schema.id];
       let [componentName, subComponentName] = schemaMapStateSnap[schema.id].componentName.split('.')
-      importGlobalMaps[libraryName] = libraryGlobalImport;
+      if (libraryName && libraryGlobalImport) {
+        importGlobalMaps[libraryName] = libraryGlobalImport;
+      }
       let newProps: any = {
         ...defaultProps,
         ...props,
@@ -43,17 +45,17 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
 
       let childrenStr: string = '';
       // 添加 import 的语句依赖
-      if (improtMaps.libraryGlobalImport[libraryGlobalImport] && improtMaps.libraryName[libraryName]) {
-        improtMaps.libraryGlobalImport[libraryGlobalImport].add(componentName)
-        improtMaps.libraryName[libraryName].add(componentName)
-      } else {
-        improtMaps.libraryGlobalImport[libraryGlobalImport] = new Set([componentName])
-        improtMaps.libraryName[libraryName] = new Set([componentName])
+      if (libraryGlobalImport && libraryName) {
+        if (improtMaps.libraryGlobalImport[libraryGlobalImport] && improtMaps.libraryName[libraryName]) {
+          improtMaps.libraryGlobalImport[libraryGlobalImport].add(componentName)
+          improtMaps.libraryName[libraryName].add(componentName)
+        } else {
+          improtMaps.libraryGlobalImport[libraryGlobalImport] = new Set([componentName])
+          improtMaps.libraryName[libraryName] = new Set([componentName])
+        }
       }
 
-
       const hasProps = Object.keys(newProps).length > 0;
-      newProps =  jsxProps2JsxEle(newProps) // 把 jsx type 转为 jsxEle
 
       const propsStr = hasProps ? Object.entries(newProps).filter(([key, value]) => {
         if (key === 'children' && typeof value !== 'object') {
@@ -63,14 +65,15 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
           return true
         }
       }).map(([key, value]) => {
-        if (typeof value === 'object') {
-          return `${key}={${JSON.stringify(value)}}`
+        if (typeof value === 'object' && value !== null) {
+          return `${key}={${JSON.stringify(jsxProps2JsxEle(value, [newProps.componentid,'props',key]))}}`
         } else if (typeof value === 'string') {
           return `${key}="${(value)}"`
         } else {
           return `${key}={${(value)}}`
         }
       }).join(' ') : ''
+
       if (isSlot && schema.slot) {
         return `<${subComponentName || componentName} ${propsStr}>
            ${childrenStr ? childrenStr : ''}
@@ -85,7 +88,7 @@ async function schemaTransform({ idSchemaStateSnap, schemaMapStateSnap }: { idSc
     ).join('\n')
   }
 
-  const jsx = slotRender(idSchemaStateSnap).replace(/\"\[{{(.*?)}}\]\"/g,`$1`)
+  const jsx = slotRender(idSchemaStateSnap).replace(/\"\[{{(.*?)}}\]\"/g, `$1`)
   const hasSubModuneMaps = Object.keys(subModuneMaps).length > 0;
   // 组件文件
   const getMainjsType = (type: 'libraryName' | 'libraryGlobalImport') => {
